@@ -1,0 +1,53 @@
+import React, { useState } from 'react';
+import { IoHome } from "react-icons/io5";
+import { RiTeamFill } from "react-icons/ri";
+import { FaTruckMoving } from "react-icons/fa";
+import { FaPeopleCarry } from "react-icons/fa";
+import type { MenuProps } from 'antd';
+import { Menu } from 'antd';
+import * as styled from './Navbar.styles';
+import { useNavigate } from 'react-router-dom';
+
+type MenuItem = Required<MenuProps>['items'][number];
+
+const items: MenuItem[] = [
+  {
+    label: 'Home',
+    key: 'home',
+    icon: <IoHome />,
+  },
+  {
+    label: 'Funcionarios',
+    key: 'funcionarios',
+    icon: <RiTeamFill />,
+  },
+  {
+    label: 'Frota',
+    key: 'veiculos',
+    icon: <FaTruckMoving />,
+  },
+  {
+    label: 'Serviços',
+    key: 'servicos',
+    icon: <FaPeopleCarry />,
+  },
+];
+
+function Navbar() {
+    const [current, setCurrent] = useState('mail');
+    const navigate = useNavigate();
+
+    const onClick: MenuProps['onClick'] = (e) => {
+      setCurrent(e.key);
+      navigate(`/${e.key}`);
+    };
+  
+    return (
+        <styled.NavbarContainer>
+            <styled.Logo src="logo_amitran.png" alt="logo amitran" />
+            <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} style={{justifyContent: 'center'}}/>
+        </styled.NavbarContainer>
+    )
+}
+
+export default Navbar;

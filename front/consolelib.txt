@@ -1,0 +1,50 @@
+template de como criar um componente -> 
+
+ARQUIVO "NOME.tsx":
+
+import React from 'react';
+import * as styled from './Name.styles';
+
+export interface NameProps {
+    props1: string;
+}
+
+function Nome(props: NameProps) {
+
+        LÓGICAS DO CÓDIGO, REQUISIÇÕES E AFINS
+      
+        return(
+            O HTML AQUI
+            <styled.ComponenteCSS /> // vai ser uma div com as estilizações do arquivo abaixo
+        );
+}
+
+export default Name;
+____________________________________________________________________
+ARQUIVO "NOME.styles.ts"
+
+import styled from 'styled-components';
+
+export const ComponenteCSS = styled.div`
+    regras de css aqui.
+`;
+____________________________________________________________________
+ARQUIVO index.ts
+
+export { default as NOME } from './NOME';
+
+
+______________________________________________________________________
+AO FAZER UMA TAREFA NOVA -> 
+ABRIR BRANCH NOVA COM O NOME DA TAREFA/ATIVIDADE A SER REALIZADA 
+
+CODAR O QUE TIVER QUE CODAR
+
+GIT ADD ., GIT COMMIT -M "MENSAGEM", GIT PUSH
+
+FAZER UM PULL REQUEST ( VIA GITHUB DESKTOP ) DA MAIN PRA SUA BRANCH
+ABRIR TERMINAL -> GIT FETCH, GIT PULL, E TESTAR PRA VER SE NÃO QUEBROU NADA 
+
+ABRIR PULL REQUEST DA SUA BRANCH PRA MAIN
+
+____________________________________________________________________
