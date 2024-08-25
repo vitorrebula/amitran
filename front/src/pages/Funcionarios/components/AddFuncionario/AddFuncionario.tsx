@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import * as styled from './AddFuncionario.styles';
-import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space } from 'antd';
+import { Button, Col, DatePicker, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
 import axios from 'axios';
 import { Funcionario } from '../../Funcionarios';
 import dayjs from 'dayjs';
@@ -30,6 +30,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
             const novoFuncionario = response.data;
 
             setListaFuncionario(prev => [...prev, novoFuncionario]);
+            message.success('Funcionário adicionado com sucesso!');
 
             setShowAddFunc(false);
             form.resetFields();

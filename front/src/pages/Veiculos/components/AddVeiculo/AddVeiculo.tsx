@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import * as styled from './AddVeiculo.styles';
-import { Button, Col, Drawer, Form, Input, Row, Select, Space } from 'antd';
+import { Button, Col, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
 import axios from 'axios';
 import { Veiculo } from '../../Veiculos';
 
@@ -23,6 +23,7 @@ function AddVeiculo(props: AddVeiculoProps) {
             const novoVeiculo = response.data;
 
             setListaVeiculo(prev => [...prev, novoVeiculo]);
+            message.success('Veiculo adicionado com sucesso!');
 
             setShowAddVeiculo(false);
         } catch (error) {

@@ -21,7 +21,7 @@ export interface Funcionario {
 
 export interface FuncionariosProps {
     listaFuncionario: Funcionario[];
-    setListaFuncionario: Dispatch<SetStateAction<Funcionario[]>>
+    setListaFuncionario: Dispatch<SetStateAction<Funcionario[]>>;
 }
 
 function Funcionarios(props: FuncionariosProps) {
@@ -31,20 +31,6 @@ function Funcionarios(props: FuncionariosProps) {
     const [searchText, setSearchText] = useState('');
     const {listaFuncionario, setListaFuncionario} = props;
     const [funcionarioSelecionado, setFuncionarioSelecionado] = useState<Funcionario | null>(null);
-
-    const buscaFuncionarios = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/Funcionario');
-            setListaFuncionario(response.data);
-        } catch (error) {
-            console.error('Erro ao buscar a lista de funcionários:', error);
-            return [];
-        }
-    };
-
-    useEffect(() => {
-        buscaFuncionarios();
-    }, []);
 
     const handleEdit = (funcionario: Funcionario) => {
         setFuncionarioSelecionado(funcionario);

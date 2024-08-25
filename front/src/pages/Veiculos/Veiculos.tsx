@@ -31,20 +31,6 @@ function Veiculos(props: VeiculosProps) {
     const { listaVeiculo, setListaVeiculo } = props;
     const [veiculoSelecionado, setVeiculoSelecionado] = useState<Veiculo | null>(null);
 
-    const buscaVeiculos = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/veiculo');
-            setListaVeiculo(response.data);
-        } catch (error) {
-            console.error('Erro ao buscar a lista de veículos:', error);
-            return [];
-        }
-    };
-
-    useEffect(() => {
-        buscaVeiculos();
-    }, []);
-
     const handleEdit = (veiculo: Veiculo) => {
         setVeiculoSelecionado(veiculo);
         setShowEditVeiculo(true);

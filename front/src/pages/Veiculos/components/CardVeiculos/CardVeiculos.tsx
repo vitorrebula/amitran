@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import * as styled from './CardVeiculos.styles';
 import { EditOutlined } from '@ant-design/icons';
-import { Card } from 'antd';
+import { Card, message } from 'antd';
 import { FaTrashAlt, FaMotorcycle } from 'react-icons/fa';
 import { FaRoad } from "react-icons/fa";
 import { BsTruckFlatbed } from "react-icons/bs";
@@ -27,7 +27,8 @@ function CardVeiculo(props: CardVeiculoProps) {
             await axios.delete(`http://localhost:8080/veiculo/${placa}`);
             
             setListaVeiculo((prev) => prev.filter(veiculo => veiculo.placa !== placa));
-    
+            message.success('Veiculo removido com sucesso!');
+
             setShowDelete(false);
         } catch (error) {
             console.error("Erro ao deletar o veículo:", error);

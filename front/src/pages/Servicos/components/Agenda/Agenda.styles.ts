@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 export const AgendaContainer = styled.div`
-    padding: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 `;
 
 export const ServiçosTitle = styled.h1`

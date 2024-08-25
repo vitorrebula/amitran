@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import * as styled from './CardFuncionario.styles';
 import { EditOutlined } from '@ant-design/icons';
-import { Avatar, Card } from 'antd';
+import { Avatar, Card, message } from 'antd';
 import { FaTrashAlt } from 'react-icons/fa';
 import { Funcionario } from '../../Funcionarios';
 import axios from 'axios';
@@ -24,7 +24,8 @@ function CardFuncionario(props: CardFuncionarioProps) {
             await axios.delete(`http://localhost:8080/Funcionario/${id}`);
             
             setListaFuncionario((prev) => prev.filter(funcionario => funcionario.id !== id));
-    
+            message.success('Funcionário removido com sucesso!');
+
             setShowDelete(false);
         } catch (error) {
             console.error("Erro ao deletar o funcionário:", error);

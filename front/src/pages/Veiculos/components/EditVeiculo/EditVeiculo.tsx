@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import * as styled from './EditVeiculo.styles';
-import { Button, Col, Drawer, Form, Input, Row, Select, Space } from 'antd';
+import { Button, Col, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
 import axios from 'axios';
 import { Veiculo } from '../../Veiculos';
 
@@ -39,6 +39,8 @@ function EditVeiculo(props: EditVeiculoProps) {
                     veiculo.id === veiculoAtualizado.id ? veiculoAtualizado : veiculo
                 )
             )
+            message.success('Veiculo editado com sucesso!');
+
             setShowEditVeiculo(false);
         } catch (error) {
             console.error("Erro ao atualizar os dados:", error);

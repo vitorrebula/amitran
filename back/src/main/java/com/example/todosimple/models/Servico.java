@@ -49,7 +49,7 @@ public class Servico {
     private Float valor;
 
     @Column(name = "descricao", length = 255, nullable = true)
-    @Size(groups = CreateServico.class, min = 5, max = 255)
+    @Size(groups = CreateServico.class, max = 300)
     private String descricao;
 
     @ManyToMany
