@@ -74,7 +74,7 @@ function AddModal(props: AddModalProps) {
     }, [listaServico, dataInicio, dataTermino]);
 
     const getServicosConflitantes = useCallback((funcionarioId: number, dataInicio: Dayjs, dataTermino?: Dayjs) => {
-        return listaServico.filter(servico =>
+        return listaServico?.filter(servico =>
             servico.funcionarios.some(f => f.id === funcionarioId) &&
             (
                 dayjs(dataInicio).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]') ||
@@ -86,7 +86,7 @@ function AddModal(props: AddModalProps) {
     }, [listaServico]);
 
     const getVeiculosConflitantes = useCallback((placa: string, dataInicio: Dayjs, dataTermino?: Dayjs) => {
-        return listaServico.filter(servico =>
+        return listaServico?.filter(servico =>
             servico.veiculos?.some(v => v.placa === placa) &&
             (
                 dayjs(dataInicio).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]') ||
@@ -97,7 +97,7 @@ function AddModal(props: AddModalProps) {
         );
     }, [listaServico]);
 
-    const veiculosDisponiveis = veiculos.filter(veiculo =>
+    const veiculosDisponiveis = veiculos?.filter(veiculo =>
         veiculo.status === 'Ativo'
     );
 
@@ -110,16 +110,14 @@ function AddModal(props: AddModalProps) {
             return;
         }
 
-        const funcionariosSelecionados = values.motoristas.concat(values.ajudantes);
+        const funcionariosSelecionados = values.motoristas?.concat(values.ajudantes);
 
-        if (funcionariosSelecionados.length === 0) {
+        if (!funcionariosSelecionados) {
             message.error('É necessário selecionar ao menos um funcionário.');
             return;
         }
 
-        const validFuncionarios = funcionariosSelecionados
-            .filter((id: number | undefined) => id !== undefined && id !== null)
-            .map((id: number) => ({ id } as Funcionario));
+        const validFuncionarios = funcionariosSelecionados?.filter((id: number | undefined) => id !== undefined && id !== null).map((id: number) => ({ id } as Funcionario));
 
         const newServico: Servico = {
             nomeCliente: values.nomeCliente,
@@ -147,12 +145,12 @@ function AddModal(props: AddModalProps) {
         }
     };
 
-    const motoristas = funcionarios.filter(func =>
+    const motoristas = funcionarios?.filter(func =>
         (func.cargo === 'Motorista' || func.cargo === 'Chapa Motorista') &&
         func.status === 'Ativo'
     );
 
-    const ajudantes = funcionarios.filter(func =>
+    const ajudantes = funcionarios?.filter(func =>
         (func.cargo === 'Ajudante' || func.cargo === 'Chapa Ajudante') &&
         func.status === 'Ativo'
     );
@@ -228,7 +226,7 @@ function AddModal(props: AddModalProps) {
                                         <Select mode="multiple" placeholder="Selecione os motoristas" disabled={!datasPreenchidas}>
                                             {motoristas.map(funcionario => {
                                                 const servicosConflitantes = getServicosConflitantes(funcionario.id, dataInicio!, dataTermino);
-                                                const optionDisabled = servicosConflitantes.length > 0;
+                                                const optionDisabled = servicosConflitantes?.length > 0;
 
                                                 return (
                                                     <Select.Option key={funcionario.id} value={funcionario.id} disabled={optionDisabled}>
@@ -252,7 +250,7 @@ function AddModal(props: AddModalProps) {
                                     <Select mode="multiple" placeholder="Selecione os motoristas" disabled={!datasPreenchidas}>
                                             {ajudantes.map(funcionario => {
                                                 const servicosConflitantes = getServicosConflitantes(funcionario.id, dataInicio!, dataTermino);
-                                                const optionDisabled = servicosConflitantes.length > 0;
+                                                const optionDisabled = servicosConflitantes?.length > 0;
 
                                                 return (
                                                     <Select.Option key={funcionario.id} value={funcionario.id} disabled={optionDisabled}>
@@ -278,7 +276,7 @@ function AddModal(props: AddModalProps) {
                                 <Select mode="multiple" placeholder="Selecione os veículos" disabled={!datasPreenchidas}>
                                     {veiculosDisponiveis.map(veiculo => {
                                         const servicosConflitantes = getVeiculosConflitantes(veiculo.placa, dataInicio!, dataTermino);
-                                        const optionDisabled = servicosConflitantes.length > 0;
+                                        const optionDisabled = servicosConflitantes?.length > 0;
 
                                         return (
                                             <Select.Option key={veiculo.placa} value={veiculo.placa} disabled={optionDisabled}>
