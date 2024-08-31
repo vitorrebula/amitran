@@ -51,7 +51,7 @@ function CardServicos(props: CardServicosProps) {
                 }}
                 style={{ paddingRight: '15px' }}
             />
-            <FaRegTrashAlt 
+            <FaRegTrashAlt
                 onClick={(event) => {
                     event.stopPropagation();
                     showModal(servico);
@@ -98,6 +98,7 @@ function CardServicos(props: CardServicosProps) {
             children: (
                 <div>
                     <h4 style={{ margin: 0 }}>{`${dayjs(servico.dataInicio).format('DD/MM/YYYY')} > ${dayjs(servico.dataTermino).format('DD/MM/YYYY')}`}</h4>
+                    <p style={{ fontSize: '0.8rem' }}>{`${servico.enderecoOrigem} > ${servico.enderecoEntrega}`}</p>
                     <div>
                         <strong>Veículos:</strong>
                         {renderVeiculos(servico.veiculos)}
@@ -105,7 +106,7 @@ function CardServicos(props: CardServicosProps) {
                     <div>
                         {renderFuncionarios(servico.funcionarios)}
                     </div>
-                    <p style={{fontSize: '0.6rem'}}>{`obs: ${servico.descricao}`}</p>
+                    <p style={{ fontSize: '0.8rem' }}>{`obs: ${servico.descricao}`}</p>
                 </div>
             ),
             extra: genExtra(servico),

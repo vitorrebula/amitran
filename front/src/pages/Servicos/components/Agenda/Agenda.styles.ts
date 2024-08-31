@@ -15,6 +15,7 @@ export const Legenda = styled.h2`
     font-size: large;
     text-align: center;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin-bottom: 0;
 `;
 
 export const CenteredCalendar = styled.div`
