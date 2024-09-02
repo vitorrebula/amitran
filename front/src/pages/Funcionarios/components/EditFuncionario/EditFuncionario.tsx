@@ -236,7 +236,8 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 okText="Confirmar"
                 cancelText="Cancelar"
             >
-                <ul style={{listStyle: 'none'}}>
+                <h3>Ao confirmar, o Veículo será retirado dos seguintes serviços:</h3>
+                <ul style={{ listStyle: 'none' }}>
                     {futureServicos.map(servico => (
                         <li key={servico.id}>
                             {`${servico.nomeCliente}: ${dayjs(servico.dataInicio).format('DD/MM/YYYY')} > ${dayjs(servico.dataTermino).format('DD/MM/YYYY')}`}

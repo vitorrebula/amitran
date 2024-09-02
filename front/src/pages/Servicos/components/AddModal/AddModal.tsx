@@ -104,21 +104,24 @@ function AddModal(props: AddModalProps) {
     const handleFinish = async (values: any) => {
         const dataInicio = dayjs(values.dataInicio);
         const dataTermino = values.dataTermino ? dayjs(values.dataTermino) : undefined;
-
+    
         if (dataTermino && dataTermino.isBefore(dataInicio)) {
             message.error('A data de término não pode ser antes da data de início.');
             return;
         }
-
-        const funcionariosSelecionados = values.motoristas?.concat(values.ajudantes);
-
-        if (!funcionariosSelecionados) {
+    
+        const funcionariosSelecionados: Funcionario[] = values.motoristas?.concat(values.ajudantes)
+            .filter((id: number | undefined) => id !== undefined && id !== null)
+            .map((id: number) => {
+                const funcionario = funcionarios.find(func => func.id === id);
+                return funcionario as Funcionario;
+            });
+    
+        if (!funcionariosSelecionados || funcionariosSelecionados.length === 0) {
             message.error('É necessário selecionar ao menos um funcionário.');
             return;
         }
-
-        const validFuncionarios = funcionariosSelecionados?.filter((id: number | undefined) => id !== undefined && id !== null).map((id: number) => ({ id } as Funcionario));
-
+    
         const newServico: Servico = {
             nomeCliente: values.nomeCliente,
             enderecoOrigem: values.enderecoOrigem,
@@ -127,16 +130,19 @@ function AddModal(props: AddModalProps) {
             dataTermino: values.dataTermino?.toISOString(),
             valor: values.valor || 0,
             descricao: values.descricao || '',
-            funcionarios: validFuncionarios,
+            funcionarios: funcionariosSelecionados,
         };
-
+    
         if (values.veiculos && values.veiculos.length > 0) {
             newServico.veiculos = values.veiculos.map((placa: string) => ({ placa } as Veiculo));
         }
-
+    
         try {
             const response = await axios.post('http://localhost:8080/servico', newServico);
-            setListaServico(prev => [...prev, response.data]);
+            
+            const servicoComId = { ...newServico, id: response.data.id };
+            
+            setListaServico(prev => [...prev, servicoComId]);
             message.success('Serviço adicionado com sucesso!');
             handleClose();
         } catch (error) {

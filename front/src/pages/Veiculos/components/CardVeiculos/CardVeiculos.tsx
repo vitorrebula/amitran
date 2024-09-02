@@ -11,23 +11,33 @@ import { PiVanFill } from "react-icons/pi";
 import { Veiculo } from '../../Veiculos';
 import axios from 'axios';
 import { IoReturnDownBackOutline } from 'react-icons/io5';
+import { Servico } from '../../../Servicos/ServicosPage';
 
 interface CardVeiculoProps {
     veiculo: Veiculo;
     setShowEditVeiculo: () => void;
     setListaVeiculo: Dispatch<SetStateAction<Veiculo[]>>;
+    listaServico: Servico[];
+    setListaServico: Dispatch<SetStateAction<Servico[]>>;
 }
 
 function CardVeiculo(props: CardVeiculoProps) {
-    const { veiculo, setShowEditVeiculo, setListaVeiculo } = props;
+    const { veiculo, setShowEditVeiculo, setListaVeiculo, listaServico, setListaServico } = props;
     const [showDelete, setShowDelete] = useState<boolean>(false);
 
     const deleteVeiculo = async (placa: string) => {
         try {
             await axios.delete(`http://localhost:8080/veiculo/${placa}`);
-            
+
+            const updatedServicos = listaServico.map(servico => ({
+                ...servico,
+                veiculos: servico.veiculos?.filter(v => v.placa !== placa)
+            }));
+
+            setListaServico(updatedServicos);
+
             setListaVeiculo((prev) => prev.filter(veiculo => veiculo.placa !== placa));
-            message.success('Veiculo removido com sucesso!');
+            message.success('Veículo removido com sucesso!');
 
             setShowDelete(false);
         } catch (error) {

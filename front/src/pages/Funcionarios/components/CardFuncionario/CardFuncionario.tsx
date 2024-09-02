@@ -6,23 +6,33 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { Funcionario } from '../../Funcionarios';
 import axios from 'axios';
 import { IoReturnDownBackOutline } from 'react-icons/io5';
+import { Servico } from '../../../Servicos/ServicosPage';
 
 
 interface CardFuncionarioProps {
     funcionario: Funcionario;
     setShowEditFunc: () => void;
     setListaFuncionario: Dispatch<SetStateAction<Funcionario[]>>;
+    listaServico: Servico[];
+    setListaServico: Dispatch<SetStateAction<Servico[]>>;
 }
 
 function CardFuncionario(props: CardFuncionarioProps) {
-    const { funcionario, setShowEditFunc, setListaFuncionario } = props;
+    const { funcionario, setShowEditFunc, setListaFuncionario, listaServico, setListaServico } = props;
     const [showDelete, setShowDelete] = useState<boolean>(false);
     const avatarSeed = encodeURIComponent(funcionario.username);
 
     const deleteFuncionario = async (id: number) => {
         try {
             await axios.delete(`http://localhost:8080/Funcionario/${id}`);
-            
+
+            const updatedServicos = listaServico.map(servico => ({
+                ...servico,
+                funcionarios: servico.funcionarios.filter(f => f.id !== id)
+            }));
+
+            setListaServico(updatedServicos);
+
             setListaFuncionario((prev) => prev.filter(funcionario => funcionario.id !== id));
             message.success('Funcionário removido com sucesso!');
 

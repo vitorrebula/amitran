@@ -77,13 +77,13 @@ function CardServicos(props: CardServicosProps) {
             <div>
                 <div>
                     <strong>Motoristas:</strong>
-                    {motoristas.length > 0 ? motoristas.map((funcionario, index) => (
+                    {motoristas?.length > 0 ? motoristas?.map((funcionario, index) => (
                         <div key={index}>{funcionario.username}</div>
                     )) : <div>Nenhum motorista</div>}
                 </div>
                 <div>
                     <strong>Ajudantes:</strong>
-                    {ajudantes.length > 0 ? ajudantes.map((funcionario, index) => (
+                    {ajudantes?.length > 0 ? ajudantes?.map((funcionario, index) => (
                         <div key={index}>{funcionario.username}</div>
                     )) : <div>Nenhum ajudante</div>}
                 </div>

@@ -1,22 +1,28 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as styled from './EditVeiculo.styles';
-import { Button, Col, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
+import { Button, Col, Drawer, Form, Input, message, Modal, Row, Select, Space } from 'antd';
 import axios from 'axios';
 import { Veiculo } from '../../Veiculos';
+import dayjs from 'dayjs';
+import { Servico } from '../../../Servicos/ServicosPage';
 
 interface EditVeiculoProps {
     setShowEditVeiculo: Dispatch<SetStateAction<boolean>>;
     showEditVeiculo: boolean;
     veiculo?: Veiculo;
     setListaVeiculo: Dispatch<SetStateAction<Veiculo[]>>;
+    listaServico: Servico[];
+    setListaServico: Dispatch<SetStateAction<Servico[]>>;
 }
 
 const { Option } = Select;
 
 function EditVeiculo(props: EditVeiculoProps) {
-    const { setShowEditVeiculo, showEditVeiculo, veiculo, setListaVeiculo } = props;
+    const { setShowEditVeiculo, showEditVeiculo, veiculo, setListaVeiculo, listaServico, setListaServico } = props;
 
     const [form] = Form.useForm();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [futureServicos, setFutureServicos] = useState<Servico[]>([]);
 
     useEffect(() => {
         if (veiculo) {
@@ -26,6 +32,41 @@ function EditVeiculo(props: EditVeiculoProps) {
         }
     }, [veiculo, form]);
 
+    const handleSave = async (values: Veiculo) => {
+        if (values.status === 'Inativo') {
+            const futureServices = listaServico.filter(servico =>
+                dayjs(servico.dataInicio).isAfter(dayjs()) || dayjs(servico.dataTermino).isAfter(dayjs()) &&
+                servico.veiculos?.some(v => v.id === veiculo?.id)
+            );
+
+            if (futureServices.length > 0) {
+                setFutureServicos(futureServices);
+                setModalVisible(true);
+            } else {
+                await AtualizarVeiculo(values);
+            }
+        } else {
+            await AtualizarVeiculo(values);
+        }
+    };
+
+    const handleConfirm = async () => {
+        for (const servico of futureServicos) {
+            const updatedService = {
+                ...servico,
+                veiculos: servico.veiculos?.filter(v => v.id !== veiculo?.id)
+            };
+
+            await axios.put(`http://localhost:8080/servico`, updatedService);
+            setListaServico(prev =>
+                prev.map(s => s.id === servico.id ? updatedService : s)
+            );
+        }
+
+        setModalVisible(false);
+        await AtualizarVeiculo(form.getFieldsValue());
+    };
+
     const AtualizarVeiculo = async (values: Veiculo) => {
         try {
             const dataToSend = {
@@ -33,13 +74,14 @@ function EditVeiculo(props: EditVeiculoProps) {
                 id: veiculo?.id,
             };
     
-            const response = await axios.put(`http://localhost:8080/veiculo/${veiculo?.placa}`, dataToSend);            const veiculoAtualizado = response.data; 
+            const response = await axios.put(`http://localhost:8080/veiculo/${veiculo?.placa}`, dataToSend);            
+            const veiculoAtualizado = response.data; 
             setListaVeiculo(prev => 
                 prev.map(veiculo => 
                     veiculo.id === veiculoAtualizado.id ? veiculoAtualizado : veiculo
                 )
             )
-            message.success('Veiculo editado com sucesso!');
+            message.success('Veículo editado com sucesso!');
 
             setShowEditVeiculo(false);
         } catch (error) {
@@ -67,7 +109,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                     form={form}
                     layout="vertical"
                     hideRequiredMark
-                    onFinish={AtualizarVeiculo}
+                    onFinish={handleSave}
                 >
                     <Row gutter={16}>
                         <Col span={24}>
@@ -87,7 +129,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                                 label="Placa"
                                 rules={[{ required: true, message: 'Insira a Placa' }]}
                             >
-                                <Input placeholder="Insira a Placa" />
+                                <Input placeholder="Insira a Placa" disabled/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -142,12 +184,30 @@ function EditVeiculo(props: EditVeiculoProps) {
                                     },
                                 ]}
                             >
-                                <Input.TextArea rows={4} placeholder="Caso queira, insira observações sobre o Veículo." />
+                                <Input.TextArea rows={3} placeholder="Caso queira, insira observações sobre o Veículo." />
                             </Form.Item>
                         </Col>
                     </Row>
                 </Form>
             </Drawer>
+
+            <Modal
+                title="Você está Inativando um Veículo que estará em um Serviço futuro, deseja confirmar?"
+                open={modalVisible}
+                onOk={handleConfirm}
+                onCancel={() => setModalVisible(false)}
+                okText="Confirmar"
+                cancelText="Cancelar"
+            >
+                <h3>Ao confirmar, o Veículo será retirado dos seguintes serviços:</h3>
+                <ul style={{listStyle: 'none'}}>
+                    {futureServicos.map(servico => (
+                        <li key={servico.id}>
+                            {`${servico.nomeCliente}: ${dayjs(servico.dataInicio).format('DD/MM/YYYY')} > ${dayjs(servico.dataTermino).format('DD/MM/YYYY')}`}
+                        </li>
+                    ))}
+                </ul>
+            </Modal>
         </styled.EditVeiculoContainer>
     );
 }

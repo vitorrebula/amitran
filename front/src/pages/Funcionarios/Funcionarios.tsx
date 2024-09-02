@@ -57,6 +57,8 @@ function Funcionarios(props: FuncionariosProps) {
                                 funcionario={funcionario}
                                 setListaFuncionario={setListaFuncionario}
                                 setShowEditFunc={() => handleEdit(funcionario)}
+                                listaServico={listaServico}
+                                setListaServico={setListaServico}
                             />
                         ))
                 ) : (
@@ -69,6 +71,8 @@ function Funcionarios(props: FuncionariosProps) {
                                 funcionario={funcionario}
                                 setListaFuncionario={setListaFuncionario}
                                 setShowEditFunc={() => handleEdit(funcionario)}
+                                listaServico={listaServico}
+                                setListaServico={setListaServico}
                             />
                         ))
                 )}

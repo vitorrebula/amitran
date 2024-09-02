@@ -7,6 +7,7 @@ import axios from 'axios';
 import AddVeiculo from './components/AddVeiculo/AddVeiculo';
 import CardVeiculo from './components/CardVeiculos/CardVeiculos';
 import { EditVeiculo } from './components/EditVeiculo';
+import { Servico } from '../Servicos/ServicosPage';
 
 export interface Veiculo {
     id: number;
@@ -20,7 +21,9 @@ export interface Veiculo {
 
 export interface VeiculosProps {
     listaVeiculo: Veiculo[];
-    setListaVeiculo: Dispatch<SetStateAction<Veiculo[]>>
+    setListaVeiculo: Dispatch<SetStateAction<Veiculo[]>>;
+    listaServico: Servico[];
+    setListaServico: Dispatch<SetStateAction<Servico[]>>;
 }
 
 function Veiculos(props: VeiculosProps) {
@@ -28,7 +31,7 @@ function Veiculos(props: VeiculosProps) {
     const [showEditVeiculo, setShowEditVeiculo] = useState(false);
     const [showInativos, setShowInativos] = useState(false);
     const [searchText, setSearchText] = useState('');
-    const { listaVeiculo, setListaVeiculo } = props;
+    const { listaVeiculo, setListaVeiculo, listaServico, setListaServico } = props;
     const [veiculoSelecionado, setVeiculoSelecionado] = useState<Veiculo | null>(null);
 
     const handleEdit = (veiculo: Veiculo) => {
@@ -41,34 +44,41 @@ function Veiculos(props: VeiculosProps) {
             <Navbar />
             <MenuDeAcoes setShowAddModal={setShowAddVeiculo} setCheckBoxEvent={setShowInativos} showCheckBox={true} setSearchText={setSearchText} AddText='Adicionar Veículo' />
             <AddVeiculo setListaVeiculo={setListaVeiculo} setShowAddVeiculo={setShowAddVeiculo} showAddVeiculo={showAddVeiculo} />
-            <EditVeiculo 
-                setShowEditVeiculo={setShowEditVeiculo} 
-                showEditVeiculo={showEditVeiculo} 
-                veiculo={veiculoSelecionado ? veiculoSelecionado : undefined} 
-                setListaVeiculo={setListaVeiculo} 
-            />            <styled.ListaVeiculos>
-                {showInativos ? 
-                (listaVeiculo
-                    .filter(veiculo => veiculo.placa.toLowerCase().includes(searchText.toLowerCase()))
-                    .sort((a, b) => a.placa.localeCompare(b.placa))
-                    .map(veiculo => (
-                        <CardVeiculo
-                            key={veiculo.id}
-                            veiculo={veiculo}
-                            setListaVeiculo={setListaVeiculo}
-                            setShowEditVeiculo={() => handleEdit(veiculo)}
-                        />
-                    ))) : (
+            <EditVeiculo
+                setShowEditVeiculo={setShowEditVeiculo}
+                showEditVeiculo={showEditVeiculo}
+                veiculo={veiculoSelecionado ? veiculoSelecionado : undefined}
+                setListaVeiculo={setListaVeiculo}
+                listaServico={listaServico}
+                setListaServico={setListaServico}
+            />            
+            <styled.ListaVeiculos>
+                {showInativos ?
+                    (listaVeiculo
+                        .filter(veiculo => veiculo.placa.toLowerCase().includes(searchText.toLowerCase()))
+                        .sort((a, b) => a.placa.localeCompare(b.placa))
+                        .map(veiculo => (
+                            <CardVeiculo
+                                key={veiculo.id}
+                                veiculo={veiculo}
+                                setListaVeiculo={setListaVeiculo}
+                                setShowEditVeiculo={() => handleEdit(veiculo)}
+                                listaServico={listaServico}
+                                setListaServico={setListaServico}
+                            />
+                        ))) : (
                         listaVeiculo
-                        .filter(veiculo => veiculo.status === 'Ativo' && veiculo.placa.toLowerCase().includes(searchText.toLowerCase()))                    .sort((a, b) => a.placa.localeCompare(b.placa))
-                    .map(veiculo => (
-                        <CardVeiculo
-                            key={veiculo.id}
-                            veiculo={veiculo}
-                            setListaVeiculo={setListaVeiculo}
-                            setShowEditVeiculo={() => handleEdit(veiculo)}
-                        />
-                    ))
+                            .filter(veiculo => veiculo.status === 'Ativo' && veiculo.placa.toLowerCase().includes(searchText.toLowerCase())).sort((a, b) => a.placa.localeCompare(b.placa))
+                            .map(veiculo => (
+                                <CardVeiculo
+                                    key={veiculo.id}
+                                    veiculo={veiculo}
+                                    setListaVeiculo={setListaVeiculo}
+                                    setShowEditVeiculo={() => handleEdit(veiculo)}
+                                    listaServico={listaServico}
+                                    setListaServico={setListaServico}
+                                />
+                            ))
                     )}
             </styled.ListaVeiculos>
             <FloatButton.BackTop />

@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.todosimple.models.Servico;
 import com.example.todosimple.models.Veiculo;
+import com.example.todosimple.repositories.ServicoRepository;
 import com.example.todosimple.repositories.VeiculoRepository;
 
 import jakarta.transaction.Transactional;
@@ -16,6 +18,9 @@ public class VeiculoService {
 
     @Autowired
     private VeiculoRepository veiculoRepository;
+
+    @Autowired
+    private ServicoRepository servicoRepository;
 
     public Veiculo findByPlaca(String placa) {
         Optional<Veiculo> veiculo = this.veiculoRepository.findById(placa);
@@ -44,13 +49,22 @@ public class VeiculoService {
         return this.veiculoRepository.save(novoObj);
     }
 
+    @Transactional
     public void delete(String placa) {
-        findByPlaca(placa);
+        Veiculo veiculo = findByPlaca(placa);
+
+        List<Servico> servicos = servicoRepository.findAll();
+        for (Servico servico : servicos) {
+            if (servico.getVeiculos().contains(veiculo)) {
+                servico.getVeiculos().remove(veiculo);
+                servicoRepository.save(servico);
+            }
+        }
+
         try {
             this.veiculoRepository.deleteById(placa);
         } catch (Exception e) {
-            throw new RuntimeException(
-                    "Houve um erro ao Deletar o Veículo");
+            throw new RuntimeException("Houve um erro ao deletar o Veículo");
         }
     }
 }
