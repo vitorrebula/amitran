@@ -33,24 +33,37 @@ function App() {
 
   const buscaFuncionarios = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/Funcionario');
-        setListaFuncionario(response.data);
+      const response = await axios.get('http://localhost:8080/Funcionario');
+      setListaFuncionario(response.data);
     } catch (error) {
-        console.error('Erro ao buscar a lista de funcionários:', error);
-        return [];
+      console.error('Erro ao buscar a lista de funcionários:', error);
+      return [];
     }
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     buscaFuncionarios();
-}, []);
+  }, []);
+
+  const buscaTodosServicos = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/servico');
+      setListaServico(response.data);
+    } catch (error) {
+      console.error('Erro ao buscar os serviços:', error);
+    }
+  };
+
+  useEffect(() => {
+    buscaTodosServicos();
+  }, []);
 
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<PrivateRoute><HomePage listaDeFuncionarios={listaFuncionario} setListaDeFuncionarios={setListaFuncionario}/></PrivateRoute>} />
-        <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
+        <Route path="/home" element={<PrivateRoute><HomePage listaDeFuncionarios={listaFuncionario} setListaDeFuncionarios={setListaFuncionario} /></PrivateRoute>} />
+        <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaServico={listaServico} setListaServico={setListaServico} listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/veiculos" element={<PrivateRoute><Veiculos listaVeiculo={listaVeiculo} setListaVeiculo={setListaVeiculo} /></PrivateRoute>} />
         <Route path="/servicos" element={<PrivateRoute><ServicosPage listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} setListaServico={setListaServico} listaServico={listaServico} /></PrivateRoute>} />
         <Route path="/" element={<Navigate to="/login" />} />

@@ -7,6 +7,7 @@ import { AddFuncionario } from './components/AddFuncionario';
 import axios from 'axios';
 import { CardFuncionario } from './components/CardFuncionario';
 import { EditFuncionario } from './components/EditFuncionario';
+import { Servico } from '../Servicos/ServicosPage';
 
 export interface Funcionario {
     id: number;
@@ -22,6 +23,8 @@ export interface Funcionario {
 export interface FuncionariosProps {
     listaFuncionario: Funcionario[];
     setListaFuncionario: Dispatch<SetStateAction<Funcionario[]>>;
+    listaServico: Servico[];
+    setListaServico: Dispatch<SetStateAction<Servico[]>>;
 }
 
 function Funcionarios(props: FuncionariosProps) {
@@ -29,7 +32,7 @@ function Funcionarios(props: FuncionariosProps) {
     const [showEditFunc, setShowEditFunc] = useState(false);
     const [showInativos, setShowInativos] = useState(false);
     const [searchText, setSearchText] = useState('');
-    const {listaFuncionario, setListaFuncionario} = props;
+    const {listaFuncionario, setListaFuncionario, listaServico, setListaServico} = props;
     const [funcionarioSelecionado, setFuncionarioSelecionado] = useState<Funcionario | null>(null);
 
     const handleEdit = (funcionario: Funcionario) => {
@@ -42,7 +45,7 @@ function Funcionarios(props: FuncionariosProps) {
             <Navbar />
             <MenuDeAcoes setShowAddModal={setShowAddFunc} showCheckBox={true} setCheckBoxEvent={setShowInativos} setSearchText={setSearchText} AddText='Adicionar Funcionário' />
             <AddFuncionario setListaFuncionario={setListaFuncionario} setShowAddFunc={setShowAddFunc} showAddFunc={showAddFunc} />
-            <EditFuncionario setListaFuncionario={setListaFuncionario} setShowEditFunc={setShowEditFunc} showEditFunc={showEditFunc} funcionario={funcionarioSelecionado ? funcionarioSelecionado : undefined} />
+            <EditFuncionario listaServico={listaServico} setListaServico={setListaServico} setListaFuncionario={setListaFuncionario} setShowEditFunc={setShowEditFunc} showEditFunc={showEditFunc} funcionario={funcionarioSelecionado ? funcionarioSelecionado : undefined} />
             <styled.ListaFuncionarios>
             {showInativos ? (
                     listaFuncionario

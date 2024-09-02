@@ -14,19 +14,6 @@ function Agenda(props: ServicosPageProps) {
     const [openListaServicos, setOpenListaServicos] = useState<boolean>(false);
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
-    const buscaTodosServicos = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/servico');
-            setListaServico(response.data);
-        } catch (error) {
-            console.error('Erro ao buscar os serviços:', error);
-        }
-    };
-
-    useEffect(() => {
-        buscaTodosServicos();
-    }, []);
-
     const areAllVehiclesInUse = (date: Dayjs): boolean => {
         const activeVehicles = listaVeiculo.filter(veiculo => veiculo.status === 'Ativo');
     

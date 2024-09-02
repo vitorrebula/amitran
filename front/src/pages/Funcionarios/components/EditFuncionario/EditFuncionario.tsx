@@ -1,53 +1,92 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as styled from './EditFuncionario.styles';
-import { Button, Col, DatePicker, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
+import { Button, Col, DatePicker, Drawer, Form, Input, message, Modal, Row, Select, Space } from 'antd';
 import axios from 'axios';
 import { Funcionario } from '../../Funcionarios';
 import dayjs from 'dayjs';
+import { Servico } from '../../../Servicos/ServicosPage';
 
 interface EditFuncionarioProps {
     setShowEditFunc: Dispatch<SetStateAction<boolean>>;
     showEditFunc: boolean;
     funcionario?: Funcionario;
     setListaFuncionario: Dispatch<SetStateAction<Funcionario[]>>;
+    listaServico: Servico[];
+    setListaServico: Dispatch<SetStateAction<Servico[]>>;
 }
 
 const { Option } = Select;
 
 function EditFuncionario(props: EditFuncionarioProps) {
-    const { setShowEditFunc, showEditFunc, funcionario, setListaFuncionario } = props;
-
+    const { setShowEditFunc, showEditFunc, funcionario, setListaFuncionario, listaServico, setListaServico } = props;
     const [form] = Form.useForm();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [futureServicos, setFutureServicos] = useState<Servico[]>([]);
 
     useEffect(() => {
         if (funcionario) {
             form.setFieldsValue({
                 ...funcionario,
-                dataAdmissao: dayjs(funcionario.dataAdmissao), 
-                tipoCNH: funcionario.tipoCNH, 
+                dataAdmissao: dayjs(funcionario.dataAdmissao),
+                tipoCNH: funcionario.tipoCNH,
             });
         }
     }, [funcionario, form]);
 
+    const handleSave = async (values: Funcionario) => {
+        if (values.status === 'Inativo') {
+            const futureServices = listaServico.filter(servico =>
+                dayjs(servico.dataInicio).isAfter(dayjs()) || dayjs(servico.dataTermino).isAfter(dayjs()) &&
+                servico.funcionarios.some(f => f.id === funcionario?.id)
+            );
+
+            if (futureServices.length > 0) {
+                setFutureServicos(futureServices);
+                setModalVisible(true);
+            } else {
+                await AtualizarFuncionario(values);
+            }
+        } else {
+            await AtualizarFuncionario(values);
+        }
+        console.log(futureServicos);
+        console.log(listaServico);
+    };
+
+    const handleConfirm = async () => {
+        for (const servico of futureServicos) {
+            const updatedService = {
+                ...servico,
+                funcionarios: servico.funcionarios.filter(f => f.id !== funcionario?.id)
+            };
+
+            await axios.put(`http://localhost:8080/servico`, updatedService);
+            setListaServico(prev =>
+                prev.map(s => s.id === servico.id ? updatedService : s)
+            );
+        }
+
+        setModalVisible(false);
+        await AtualizarFuncionario(form.getFieldsValue());
+    };
+
     const AtualizarFuncionario = async (values: Funcionario) => {
         try {
             const formattedDate = dayjs(values.dataAdmissao).toISOString();
-            
             const dataToSend = {
                 ...values,
                 id: funcionario?.id,
                 dataAdmissao: formattedDate,
             };
-    
+
             const response = await axios.put('http://localhost:8080/Funcionario', dataToSend);
-            const funcionarioAtualizado = response.data; 
-            setListaFuncionario(prev => 
-                prev.map(funcionario => 
+            const funcionarioAtualizado = response.data;
+            setListaFuncionario(prev =>
+                prev.map(funcionario =>
                     funcionario.id === funcionarioAtualizado.id ? funcionarioAtualizado : funcionario
                 )
-            )
+            );
             message.success('Funcionário editado com sucesso!');
-
             setShowEditFunc(false);
         } catch (error) {
             console.error("Erro ao atualizar os dados:", error);
@@ -58,8 +97,8 @@ function EditFuncionario(props: EditFuncionarioProps) {
         if (funcionario) {
             form.setFieldsValue({
                 ...funcionario,
-                dataAdmissao: dayjs(funcionario.dataAdmissao), 
-                tipoCNH: funcionario.tipoCNH, 
+                dataAdmissao: dayjs(funcionario.dataAdmissao),
+                tipoCNH: funcionario.tipoCNH,
             });
         }
         setShowEditFunc(false);
@@ -85,7 +124,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                     form={form}
                     layout="vertical"
                     hideRequiredMark
-                    onFinish={AtualizarFuncionario}
+                    onFinish={handleSave}
                 >
                     <Row gutter={16}>
                         <Col span={24}>
@@ -126,7 +165,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                     </Row>
                     <Row gutter={16}>
                         <Col span={24}>
-                        <Form.Item
+                            <Form.Item
                                 name="cargo"
                                 label="Cargo"
                                 rules={[{ required: true, message: 'Selecione o Cargo' }]}
@@ -147,8 +186,8 @@ function EditFuncionario(props: EditFuncionarioProps) {
                                 label="CPF"
                                 rules={[{ required: true, message: 'Insira o CPF' }]}
                             >
-                                <Input 
-                                    placeholder="Insira o CPF" 
+                                <Input
+                                    placeholder="Insira o CPF"
                                     maxLength={14}
                                 />
                             </Form.Item>
@@ -182,12 +221,29 @@ function EditFuncionario(props: EditFuncionarioProps) {
                                     },
                                 ]}
                             >
-                                <Input.TextArea rows={4} placeholder="Caso queira, insira observações sobre o Funcionário." />
+                                <Input.TextArea rows={3} placeholder="Caso queira, insira observações sobre o Funcionário." />
                             </Form.Item>
                         </Col>
                     </Row>
                 </Form>
             </Drawer>
+
+            <Modal
+                title="Você está Inativando um Funcionário que estará em um Serviço futuro, deseja confirmar?"
+                open={modalVisible}
+                onOk={handleConfirm}
+                onCancel={() => setModalVisible(false)}
+                okText="Confirmar"
+                cancelText="Cancelar"
+            >
+                <ul style={{listStyle: 'none'}}>
+                    {futureServicos.map(servico => (
+                        <li key={servico.id}>
+                            {`${servico.nomeCliente}: ${dayjs(servico.dataInicio).format('DD/MM/YYYY')} > ${dayjs(servico.dataTermino).format('DD/MM/YYYY')}`}
+                        </li>
+                    ))}
+                </ul>
+            </Modal>
         </styled.EditFuncionarioContainer>
     );
 }
