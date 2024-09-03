@@ -1,9 +1,8 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import * as styled from './Veiculos.styles';
 import { Navbar } from '../../components/Navbar';
 import { MenuDeAcoes } from '../components/MenuDeAcoes';
 import { FloatButton } from 'antd';
-import axios from 'axios';
 import AddVeiculo from './components/AddVeiculo/AddVeiculo';
 import CardVeiculo from './components/CardVeiculos/CardVeiculos';
 import { EditVeiculo } from './components/EditVeiculo';

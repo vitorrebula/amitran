@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useMemo } from 'react';
 import * as styled from './ListaServicos.styles';
 import { Button, Drawer, Space } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -21,13 +21,14 @@ function ListaServicos(props: ListaServicosProps) {
     const { listaServico, setListaServico, openListaServicos, setOpenListaServicos, selectedValue } = props;
     const dataSelecionada = selectedValue.format('DD/MM/YYYY');
 
-    // Filtra os serviços cuja data selecionada esteja entre a data de início e a data de término
-    const filteredServicos = listaServico.filter(servico => {
-        const dataInicio = dayjs(servico.dataInicio);
-        const dataTermino = servico.dataTermino ? dayjs(servico.dataTermino).endOf('day') : dataInicio;
-
-        return selectedValue.isBetween(dataInicio, dataTermino, null, '[]');
-    });
+    const filteredServicos = useMemo(() => {
+        return listaServico.filter(servico => {
+            const dataInicio = dayjs(servico.dataInicio);
+            const dataTermino = servico.dataTermino ? dayjs(servico.dataTermino).endOf('day') : dataInicio;
+    
+            return selectedValue.isBetween(dataInicio, dataTermino, null, '[]');
+        });
+    }, [listaServico, selectedValue]);
 
     const downloadEscala = () => {
         let escalaContent = `Escala do dia: ${dataSelecionada}\n----------------------------------------------------\n`;

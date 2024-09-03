@@ -36,8 +36,8 @@ function EditFuncionario(props: EditFuncionarioProps) {
     const handleSave = async (values: Funcionario) => {
         if (values.status === 'Inativo') {
             const futureServices = listaServico.filter(servico =>
-                dayjs(servico.dataInicio).isAfter(dayjs()) || dayjs(servico.dataTermino).isAfter(dayjs()) &&
-                servico.funcionarios.some(f => f.id === funcionario?.id)
+                (dayjs(servico?.dataInicio).isAfter(dayjs()) || dayjs(servico?.dataTermino).isAfter(dayjs())) &&
+                servico?.funcionarios?.some(f => f.id === funcionario?.id)
             );
 
             if (futureServices.length > 0) {
@@ -236,7 +236,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 okText="Confirmar"
                 cancelText="Cancelar"
             >
-                <h3>Ao confirmar, o Veículo será retirado dos seguintes serviços:</h3>
+                <h3>Ao confirmar, o Funcionário será retirado dos seguintes serviços:</h3>
                 <ul style={{ listStyle: 'none' }}>
                     {futureServicos.map(servico => (
                         <li key={servico.id}>

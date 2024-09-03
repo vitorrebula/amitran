@@ -1,6 +1,10 @@
 package com.example.todosimple.controllers;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +40,17 @@ public class ServicoController {
         Servico obj = this.servicoService.findById(id);
         return ResponseEntity.ok().body(obj);
     }
+
+@GetMapping("/data/{data}")
+public ResponseEntity<List<Servico>> getServicoPorData(@PathVariable String data) {
+    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    LocalDateTime localDateTime = LocalDateTime.parse(data, formatter);
+    ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneOffset.UTC);
+    LocalDateTime utcDateTime = zonedDateTime.toLocalDateTime();
+    
+    List<Servico> servicos = servicoService.getServicoPorData(utcDateTime);
+    return ResponseEntity.ok().body(servicos);
+}
 
     @GetMapping()
     public ResponseEntity<List<Servico>> findAll() {

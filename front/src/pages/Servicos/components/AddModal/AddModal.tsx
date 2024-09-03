@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react';
 import * as styled from './AddModal.styles';
 import { Col, DatePicker, Form, Input, message, Modal, Row, Select, Tooltip } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -32,11 +32,11 @@ function AddModal(props: AddModalProps) {
 
     const [form] = Form.useForm();
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setShowAddModal(false);
         setDatasPreenchidas(false);
         form.resetFields();
-    };
+    },[setShowAddModal, setDatasPreenchidas, form]);
 
     const verificarDatas = (dataInicio?: Dayjs, dataTermino?: Dayjs) => {
         if (dataInicio !== undefined) setDataInicio(dataInicio);
@@ -49,59 +49,36 @@ function AddModal(props: AddModalProps) {
         }
     };
 
-    const isFuncionarioDisponivel = useCallback((funcionarioId: number, dataInicio: Dayjs, dataTermino?: Dayjs) => {
-        return !listaServico.some(servico =>
-            servico.funcionarios.some(f => f.id === funcionarioId) &&
-            (
-                dayjs(dataInicio).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]') ||
-                (dataTermino && dayjs(dataTermino).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]')) ||
-                (dayjs(servico.dataInicio).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]') ||
-                    dayjs(servico.dataTermino).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]'))
-            )
-        );
-    }, [listaServico, dataInicio, dataTermino]);
-
-    const isVeiculoDisponivel = useCallback((placa: string, dataInicio: Dayjs, dataTermino?: Dayjs) => {
-        return !listaServico.some(servico =>
-            servico.veiculos?.some(v => v.placa === placa) &&
-            (
-                dayjs(dataInicio).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]') ||
-                (dataTermino && dayjs(dataTermino).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]')) ||
-                (dayjs(servico.dataInicio).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]') ||
-                    dayjs(servico.dataTermino).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]'))
-            )
-        );
-    }, [listaServico, dataInicio, dataTermino]);
-
     const getServicosConflitantes = useCallback((funcionarioId: number, dataInicio: Dayjs, dataTermino?: Dayjs) => {
         return listaServico?.filter(servico =>
-            servico.funcionarios.some(f => f.id === funcionarioId) &&
+            servico?.funcionarios?.some(f => f.id === funcionarioId) &&
             (
-                dayjs(dataInicio).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]') ||
-                (dataTermino && dayjs(dataTermino).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]')) ||
-                (dayjs(servico.dataInicio).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]') ||
-                    dayjs(servico.dataTermino).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]'))
+                dayjs(dataInicio).isBetween(dayjs(servico?.dataInicio), dayjs(servico?.dataTermino), null, '[]') ||
+                (dataTermino && dayjs(dataTermino).isBetween(dayjs(servico?.dataInicio), dayjs(servico?.dataTermino), null, '[]')) ||
+                (dayjs(servico?.dataInicio).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]') ||
+                    dayjs(servico?.dataTermino).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]'))
             )
         );
     }, [listaServico]);
 
     const getVeiculosConflitantes = useCallback((placa: string, dataInicio: Dayjs, dataTermino?: Dayjs) => {
         return listaServico?.filter(servico =>
-            servico.veiculos?.some(v => v.placa === placa) &&
+            servico?.veiculos?.some(v => v.placa === placa) &&
             (
-                dayjs(dataInicio).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]') ||
-                (dataTermino && dayjs(dataTermino).isBetween(dayjs(servico.dataInicio), dayjs(servico.dataTermino), null, '[]')) ||
-                (dayjs(servico.dataInicio).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]') ||
-                    dayjs(servico.dataTermino).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]'))
+                dayjs(dataInicio).isBetween(dayjs(servico?.dataInicio), dayjs(servico?.dataTermino), null, '[]') ||
+                (dataTermino && dayjs(dataTermino).isBetween(dayjs(servico?.dataInicio), dayjs(servico?.dataTermino), null, '[]')) ||
+                (dayjs(servico?.dataInicio).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]') ||
+                    dayjs(servico?.dataTermino).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]'))
             )
         );
     }, [listaServico]);
 
-    const veiculosDisponiveis = veiculos?.filter(veiculo =>
-        veiculo.status === 'Ativo'
-    );
+    const veiculosDisponiveis = useMemo(() => {
+        return veiculos?.filter(veiculo => veiculo.status === 'Ativo');
+    }, [veiculos]);
+    
 
-    const handleFinish = async (values: any) => {
+    const handleFinish = useCallback(async (values: any) => {
         const dataInicio = dayjs(values.dataInicio);
         const dataTermino = values.dataTermino ? dayjs(values.dataTermino) : undefined;
     
@@ -149,17 +126,22 @@ function AddModal(props: AddModalProps) {
             message.error('Erro ao adicionar o serviço. Tente novamente.');
             console.error('Erro ao adicionar serviço:', error);
         }
-    };
+    }, [funcionarios, setListaServico, handleClose]);
 
-    const motoristas = funcionarios?.filter(func =>
-        (func.cargo === 'Motorista' || func.cargo === 'Chapa Motorista') &&
-        func.status === 'Ativo'
-    );
-
-    const ajudantes = funcionarios?.filter(func =>
-        (func.cargo === 'Ajudante' || func.cargo === 'Chapa Ajudante') &&
-        func.status === 'Ativo'
-    );
+    const motoristas = useMemo(() => {
+        return funcionarios?.filter(func =>
+            (func.cargo === 'Motorista' || func.cargo === 'Chapa Motorista') &&
+            func.status === 'Ativo'
+        );
+    }, [funcionarios]);
+    
+    const ajudantes = useMemo(() => {
+        return funcionarios?.filter(func =>
+            (func.cargo === 'Ajudante' || func.cargo === 'Chapa Ajudante') &&
+            func.status === 'Ativo'
+        );
+    }, [funcionarios]);
+    
 
 
     return (

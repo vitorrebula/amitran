@@ -1,10 +1,9 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import * as styled from './Funcionarios.styles';
 import { Navbar } from '../../components/Navbar';
 import { MenuDeAcoes } from '../components/MenuDeAcoes';
 import { FloatButton } from 'antd';
 import { AddFuncionario } from './components/AddFuncionario';
-import axios from 'axios';
 import { CardFuncionario } from './components/CardFuncionario';
 import { EditFuncionario } from './components/EditFuncionario';
 import { Servico } from '../Servicos/ServicosPage';

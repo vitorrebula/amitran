@@ -23,14 +23,17 @@ export interface ServicosPageProps {
     listaFuncionario: Funcionario[];
     listaServico: Servico[];
     setListaServico: Dispatch<SetStateAction<Servico[]>>;
+    lastRequestDate: string;
+    setLastRequestDate: Dispatch<SetStateAction<string>>;
+    buscaServicosPorFaixaDeData: (date: string) => Promise<void>
 }
 
 function ServicosPage(props: ServicosPageProps) {
-       const {listaVeiculo, listaFuncionario, listaServico, setListaServico}= props;
+       const {listaVeiculo, listaFuncionario, listaServico, setListaServico, lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData}= props;
         return(
             <styled.ServicosPageContainer>
                 <Navbar />
-                <Agenda listaVeiculo={listaVeiculo} listaFuncionario={listaFuncionario} listaServico={listaServico} setListaServico={setListaServico}/>
+                <Agenda buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaVeiculo={listaVeiculo} listaFuncionario={listaFuncionario} listaServico={listaServico} setListaServico={setListaServico}/>
             </styled.ServicosPageContainer>
         );
 }

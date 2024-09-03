@@ -35,8 +35,8 @@ function EditVeiculo(props: EditVeiculoProps) {
     const handleSave = async (values: Veiculo) => {
         if (values.status === 'Inativo') {
             const futureServices = listaServico.filter(servico =>
-                dayjs(servico.dataInicio).isAfter(dayjs()) || dayjs(servico.dataTermino).isAfter(dayjs()) &&
-                servico.veiculos?.some(v => v.id === veiculo?.id)
+                (dayjs(servico?.dataInicio).isAfter(dayjs()) || dayjs(servico?.dataTermino).isAfter(dayjs())) &&
+                servico?.veiculos?.some(v => v.id === veiculo?.id)
             );
 
             if (futureServices.length > 0) {

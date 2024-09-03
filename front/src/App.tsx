@@ -16,6 +16,7 @@ function App() {
   const [listaFuncionario, setListaFuncionario] = useState<Funcionario[]>([]);
   const [listaVeiculo, setListaVeiculo] = useState<Veiculo[]>([]);
   const [listaServico, setListaServico] = useState<Servico[]>([]);
+  const [lastRequestDate, setLastRequestDate] = useState<string>('');
 
   const buscaVeiculos = async () => {
     try {
@@ -45,17 +46,23 @@ function App() {
     buscaFuncionarios();
   }, []);
 
-  const buscaTodosServicos = async () => {
+  const buscaServicosPorFaixaDeData = async (data: string) => {
     try {
-      const response = await axios.get('http://localhost:8080/servico');
+      const response = await axios.get(`http://localhost:8080/servico/data/${data}`);
       setListaServico(response.data);
+      setLastRequestDate(data);
     } catch (error) {
       console.error('Erro ao buscar os serviços:', error);
     }
   };
 
   useEffect(() => {
-    buscaTodosServicos();
+    console.log(listaServico);
+  }, [listaServico]);
+  
+  useEffect(() => {
+    const dataHoje = new Date().toISOString();
+    buscaServicosPorFaixaDeData(dataHoje);
   }, []);
 
   return (
@@ -65,7 +72,7 @@ function App() {
         <Route path="/home" element={<PrivateRoute><HomePage listaDeFuncionarios={listaFuncionario} setListaDeFuncionarios={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaServico={listaServico} setListaServico={setListaServico} listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/veiculos" element={<PrivateRoute><Veiculos listaServico={listaServico} setListaServico={setListaServico} listaVeiculo={listaVeiculo} setListaVeiculo={setListaVeiculo} /></PrivateRoute>} />
-        <Route path="/servicos" element={<PrivateRoute><ServicosPage listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} setListaServico={setListaServico} listaServico={listaServico} /></PrivateRoute>} />
+        <Route path="/servicos" element={<PrivateRoute><ServicosPage buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} setListaServico={setListaServico} listaServico={listaServico} /></PrivateRoute>} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>

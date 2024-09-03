@@ -1,6 +1,9 @@
 package com.example.todosimple.services;
 
 import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,13 @@ public class ServicoService {
     public List<Servico> findAll() {
         return servicoRepository.findAll();
     }
+
+public List<Servico> getServicoPorData(LocalDateTime data) {
+    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    String dataInicio = data.minus(1, ChronoUnit.MONTHS).format(formatter);
+    String dataTermino = data.plus(5, ChronoUnit.MONTHS).format(formatter);
+    return servicoRepository.findByDataInicioBetween(dataInicio, dataTermino);
+}
 
     @Transactional
     public Servico create(Servico obj) {
