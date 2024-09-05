@@ -1,0 +1,1 @@
+export { default as ModalDelecao } from './ModalDelecao';

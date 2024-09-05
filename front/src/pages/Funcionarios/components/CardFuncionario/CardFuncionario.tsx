@@ -5,9 +5,9 @@ import { Avatar, Card, message } from 'antd';
 import { FaTrashAlt } from 'react-icons/fa';
 import { Funcionario } from '../../Funcionarios';
 import axios from 'axios';
-import { IoReturnDownBackOutline } from 'react-icons/io5';
 import { Servico } from '../../../Servicos/ServicosPage';
-
+import dayjs from 'dayjs';
+import { ModalDelecao } from '../../../../components/ModalDelecao';
 
 interface CardFuncionarioProps {
     funcionario: Funcionario;
@@ -19,8 +19,23 @@ interface CardFuncionarioProps {
 
 function CardFuncionario(props: CardFuncionarioProps) {
     const { funcionario, setShowEditFunc, setListaFuncionario, listaServico, setListaServico } = props;
-    const [showDelete, setShowDelete] = useState<boolean>(false);
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [futureServicos, setFutureServicos] = useState<Servico[]>([]);
     const avatarSeed = encodeURIComponent(funcionario.username);
+
+    const handleDelete = () => {
+        const futureServices = listaServico.filter(servico =>
+            (dayjs(servico.dataInicio).isAfter(dayjs()) || dayjs(servico.dataTermino).isAfter(dayjs())) &&
+            servico.funcionarios.some(f => f.id === funcionario.id)
+        );
+
+        if (futureServices.length > 0) {
+            setFutureServicos(futureServices);
+            setModalVisible(true);
+        } else {
+            deleteFuncionario(funcionario.id);
+        }
+    };
 
     const deleteFuncionario = async (id: number) => {
         try {
@@ -32,55 +47,46 @@ function CardFuncionario(props: CardFuncionarioProps) {
             }));
 
             setListaServico(updatedServicos);
-
-            setListaFuncionario((prev) => prev.filter(funcionario => funcionario.id !== id));
+            setListaFuncionario(prev => prev.filter(funcionario => funcionario.id !== id));
             message.success('Funcionário removido com sucesso!');
-
-            setShowDelete(false);
+            setModalVisible(false);
         } catch (error) {
             console.error("Erro ao deletar o funcionário:", error);
         }
     };
 
+    const handleConfirmDelete = () => {
+        deleteFuncionario(funcionario.id);
+    };
+
     const action: React.ReactNode[] = [
-        <div style={{width: '100%'}} onClick={setShowEditFunc}><EditOutlined key="edit" /></div>,
-        <div style={{width: '100%'}} onClick={() => setShowDelete(true)} ><FaTrashAlt key="delete"/></div>
+        <div style={{ width: '100%' }} onClick={setShowEditFunc}><EditOutlined key="edit" /></div>,
+        <div style={{ width: '100%' }} onClick={handleDelete}><FaTrashAlt key="delete" /></div>
     ];
 
     return (
         <styled.CardFuncionarioContainer>
-            {showDelete ? (
-                <Card style={showDelete ? {border: '1px solid red', boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)"} : { boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)" }}>
-                    <Card.Meta
-                        avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${avatarSeed}`} />} title={`Excluir ${funcionario.username}?`}
-                        description={
-                            <>                                
-                            <p>Essa função é irreversível, você também pode inativá-lo.</p>
-                                <ul className='icon-wrapper'>
-                                    <li className="deleteconfirm" onClick={() => deleteFuncionario(funcionario.id)}>
-                                        <FaTrashAlt />
-                                    </li>
-                                    <li className="backtocard" onClick={() => setShowDelete(false)}>
-                                        <IoReturnDownBackOutline />
-                                    </li>
-                                </ul>
-                            </>
-                        }
-                    />
-                </Card>
-            ) : (
-                <Card actions={action} style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)" }}>
-                    <Card.Meta
-                        avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${avatarSeed}`} />} title={funcionario.username}
-                        description={
-                            <>
-                                <h3>{funcionario.cargo}</h3>
-                                <p>{funcionario.status}</p>
-                            </>
-                        }
-                    />
-                </Card>
-            )}
+            <Card actions={action} style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)" }}>
+                <Card.Meta
+                    avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${avatarSeed}`} />} 
+                    title={funcionario.username}
+                    description={
+                        <>
+                            <h3>{funcionario.cargo}</h3>
+                            <p>{funcionario.status}</p>
+                        </>
+                    }
+                />
+            </Card>
+
+            <ModalDelecao
+                title={`Excluir ${funcionario.username}?`}
+                item="funcionário"
+                futureServicos={futureServicos}
+                modalVisible={modalVisible}
+                handleConfirm={handleConfirmDelete}
+                handleCancel={() => setModalVisible(false)}
+            />
         </styled.CardFuncionarioContainer>
     );
 }

@@ -1,10 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as styled from './EditFuncionario.styles';
-import { Button, Col, DatePicker, Drawer, Form, Input, message, Modal, Row, Select, Space } from 'antd';
+import { Button, Col, DatePicker, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
 import axios from 'axios';
 import { Funcionario } from '../../Funcionarios';
 import dayjs from 'dayjs';
 import { Servico } from '../../../Servicos/ServicosPage';
+import { ModalDelecao } from '../../../../components/ModalDelecao';
 
 interface EditFuncionarioProps {
     setShowEditFunc: Dispatch<SetStateAction<boolean>>;
@@ -49,8 +50,6 @@ function EditFuncionario(props: EditFuncionarioProps) {
         } else {
             await AtualizarFuncionario(values);
         }
-        console.log(futureServicos);
-        console.log(listaServico);
     };
 
     const handleConfirm = async () => {
@@ -228,23 +227,14 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 </Form>
             </Drawer>
 
-            <Modal
-                title="Você está Inativando um Funcionário que estará em um Serviço futuro, deseja confirmar?"
-                open={modalVisible}
-                onOk={handleConfirm}
-                onCancel={() => setModalVisible(false)}
-                okText="Confirmar"
-                cancelText="Cancelar"
-            >
-                <h3>Ao confirmar, o Funcionário será retirado dos seguintes serviços:</h3>
-                <ul style={{ listStyle: 'none' }}>
-                    {futureServicos.map(servico => (
-                        <li key={servico.id}>
-                            {`${servico.nomeCliente}: ${dayjs(servico.dataInicio).format('DD/MM/YYYY')} > ${dayjs(servico.dataTermino).format('DD/MM/YYYY')}`}
-                        </li>
-                    ))}
-                </ul>
-            </Modal>
+            <ModalDelecao
+                title={`Inativar ${funcionario?.username}?`}
+                item="funcionário"
+                futureServicos={futureServicos}
+                modalVisible={modalVisible}
+                handleConfirm={handleConfirm}
+                handleCancel={() => setModalVisible(false)}
+            />
         </styled.EditFuncionarioContainer>
     );
 }

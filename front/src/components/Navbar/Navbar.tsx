@@ -7,6 +7,7 @@ import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import * as styled from './Navbar.styles';
 import { useNavigate } from 'react-router-dom';
+import useNavbar from './Navbar.hook';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -34,13 +35,7 @@ const items: MenuItem[] = [
 ];
 
 function Navbar() {
-    const [current, setCurrent] = useState('mail');
-    const navigate = useNavigate();
-
-    const onClick: MenuProps['onClick'] = (e) => {
-      setCurrent(e.key);
-      navigate(`/${e.key}`);
-    };
+    const {current, onClick} = useNavbar();
   
     return (
         <styled.NavbarContainer>

@@ -1,10 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as styled from './EditVeiculo.styles';
-import { Button, Col, Drawer, Form, Input, message, Modal, Row, Select, Space } from 'antd';
+import { Button, Col, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
 import axios from 'axios';
 import { Veiculo } from '../../Veiculos';
 import dayjs from 'dayjs';
 import { Servico } from '../../../Servicos/ServicosPage';
+import { ModalDelecao } from '../../../../components/ModalDelecao';
 
 interface EditVeiculoProps {
     setShowEditVeiculo: Dispatch<SetStateAction<boolean>>;
@@ -36,7 +37,7 @@ function EditVeiculo(props: EditVeiculoProps) {
         if (values.status === 'Inativo') {
             const futureServices = listaServico.filter(servico =>
                 (dayjs(servico?.dataInicio).isAfter(dayjs()) || dayjs(servico?.dataTermino).isAfter(dayjs())) &&
-                servico?.veiculos?.some(v => v.id === veiculo?.id)
+                servico?.veiculos?.some(v => v.placa === veiculo?.placa)
             );
 
             if (futureServices.length > 0) {
@@ -80,9 +81,8 @@ function EditVeiculo(props: EditVeiculoProps) {
                 prev.map(veiculo => 
                     veiculo.id === veiculoAtualizado.id ? veiculoAtualizado : veiculo
                 )
-            )
+            );
             message.success('Veículo editado com sucesso!');
-
             setShowEditVeiculo(false);
         } catch (error) {
             console.error("Erro ao atualizar os dados:", error);
@@ -155,8 +155,8 @@ function EditVeiculo(props: EditVeiculoProps) {
                                 </Select>
                             </Form.Item>
                         </Col>
-                        </Row>
-                        <Row gutter={16}>
+                    </Row>
+                    <Row gutter={16}>
                         <Col span={24}>
                             <Form.Item
                                 name="tipoVeiculo"
@@ -191,23 +191,14 @@ function EditVeiculo(props: EditVeiculoProps) {
                 </Form>
             </Drawer>
 
-            <Modal
-                title="Você está Inativando um Veículo que estará em um Serviço futuro, deseja confirmar?"
-                open={modalVisible}
-                onOk={handleConfirm}
-                onCancel={() => setModalVisible(false)}
-                okText="Confirmar"
-                cancelText="Cancelar"
-            >
-                <h3>Ao confirmar, o Veículo será retirado dos seguintes serviços:</h3>
-                <ul style={{listStyle: 'none'}}>
-                    {futureServicos.map(servico => (
-                        <li key={servico.id}>
-                            {`${servico.nomeCliente}: ${dayjs(servico.dataInicio).format('DD/MM/YYYY')} > ${dayjs(servico.dataTermino).format('DD/MM/YYYY')}`}
-                        </li>
-                    ))}
-                </ul>
-            </Modal>
+            <ModalDelecao
+                title={`Inativar ${veiculo?.placa}?`}
+                item="veículo"
+                futureServicos={futureServicos}
+                modalVisible={modalVisible}
+                handleConfirm={handleConfirm}
+                handleCancel={() => setModalVisible(false)}
+            />
         </styled.EditVeiculoContainer>
     );
 }

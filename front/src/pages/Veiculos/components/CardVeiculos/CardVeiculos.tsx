@@ -6,12 +6,12 @@ import { FaTrashAlt, FaMotorcycle } from 'react-icons/fa';
 import { FaRoad } from "react-icons/fa";
 import { BsTruckFlatbed } from "react-icons/bs";
 import { FaTruckFront } from "react-icons/fa6";
-import { PiTruckLight } from "react-icons/pi";
-import { PiVanFill } from "react-icons/pi";
+import { PiTruckLight, PiVanFill } from "react-icons/pi";
 import { Veiculo } from '../../Veiculos';
 import axios from 'axios';
-import { IoReturnDownBackOutline } from 'react-icons/io5';
 import { Servico } from '../../../Servicos/ServicosPage';
+import dayjs from 'dayjs';
+import { ModalDelecao } from '../../../../components/ModalDelecao';
 
 interface CardVeiculoProps {
     veiculo: Veiculo;
@@ -23,11 +23,28 @@ interface CardVeiculoProps {
 
 function CardVeiculo(props: CardVeiculoProps) {
     const { veiculo, setShowEditVeiculo, setListaVeiculo, listaServico, setListaServico } = props;
-    const [showDelete, setShowDelete] = useState<boolean>(false);
+    const [modalVisible, setModalVisible] = useState<boolean>(false); 
+    const [futureServicos, setFutureServicos] = useState<Servico[]>([]); 
+
+    const handleDelete = () => {
+        const futureServices = listaServico.filter(servico =>
+            (dayjs(servico.dataInicio).isAfter(dayjs()) || dayjs(servico.dataTermino).isAfter(dayjs())) &&
+            servico.veiculos?.some(v => v.placa === veiculo.placa)
+        );
+
+        if (futureServices.length > 0) {
+            setFutureServicos(futureServices); 
+            setModalVisible(true); 
+        } else {
+            deleteVeiculo(veiculo.placa); 
+        }
+    };
+
 
     const deleteVeiculo = async (placa: string) => {
         try {
             await axios.delete(`http://localhost:8080/veiculo/${placa}`);
+
 
             const updatedServicos = listaServico.map(servico => ({
                 ...servico,
@@ -35,14 +52,16 @@ function CardVeiculo(props: CardVeiculoProps) {
             }));
 
             setListaServico(updatedServicos);
-
-            setListaVeiculo((prev) => prev.filter(veiculo => veiculo.placa !== placa));
+            setListaVeiculo(prev => prev.filter(veiculo => veiculo.placa !== placa));
             message.success('Veículo removido com sucesso!');
-
-            setShowDelete(false);
+            setModalVisible(false); 
         } catch (error) {
             console.error("Erro ao deletar o veículo:", error);
         }
+    };
+
+    const handleConfirmDelete = () => {
+        deleteVeiculo(veiculo.placa);
     };
 
     const renderIcon = () => {
@@ -63,46 +82,33 @@ function CardVeiculo(props: CardVeiculoProps) {
     };
 
     const action: React.ReactNode[] = [
-        <div style={{width: '100%'}} onClick={setShowEditVeiculo}><EditOutlined key="edit" /></div>,
-        <div style={{width: '100%'}} onClick={() => setShowDelete(true)} ><FaTrashAlt key="delete"/></div>
+        <div style={{ width: '100%' }} onClick={setShowEditVeiculo}><EditOutlined key="edit" /></div>,
+        <div style={{ width: '100%' }} onClick={handleDelete}><FaTrashAlt key="delete" /></div>
     ];
 
     return (
         <styled.CardVeiculoContainer>
-            {showDelete ? (
-                <Card style={showDelete ? {border: '1px solid red', boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)"} : { boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)" }}>
-                    <Card.Meta
-                        avatar={renderIcon()} 
-                        title={`Excluir veículo ${veiculo.placa}?`}
-                        description={
-                            <>                                
-                            <p>Essa função é irreversível, você também pode desativá-lo.</p>
-                                <ul className='icon-wrapper'>
-                                    <li className="deleteconfirm" onClick={() => deleteVeiculo(veiculo.placa)}>
-                                        <FaTrashAlt />
-                                    </li>
-                                    <li className="backtocard" onClick={() => setShowDelete(false)}>
-                                        <IoReturnDownBackOutline />
-                                    </li>
-                                </ul>
-                            </>
-                        }
-                    />
-                </Card>
-            ) : (
-                <Card actions={action} style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)" }}>
-                    <Card.Meta
-                        avatar={renderIcon()}
-                        title={veiculo.placa}
-                        description={
-                            <>
-                                <h3>{veiculo.tipoVeiculo}</h3>
-                                <p>{veiculo.modelo}</p>
-                            </>
-                        }
-                    />
-                </Card>
-            )}
+            <Card actions={action} style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)" }}>
+                <Card.Meta
+                    avatar={renderIcon()}
+                    title={veiculo.placa}
+                    description={
+                        <>
+                            <h3>{veiculo.tipoVeiculo}</h3>
+                            <p>{veiculo.modelo}</p>
+                        </>
+                    }
+                />
+            </Card>
+
+            <ModalDelecao
+                title={`Excluir veículo ${veiculo.placa}?`}
+                item="veículo"
+                futureServicos={futureServicos}
+                modalVisible={modalVisible}
+                handleConfirm={handleConfirmDelete}
+                handleCancel={() => setModalVisible(false)}
+            />
         </styled.CardVeiculoContainer>
     );
 }
