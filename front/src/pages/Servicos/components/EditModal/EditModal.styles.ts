@@ -1,5 +1,5 @@
 import styled from 'styled-components';
 
-export const AddModalContainer = styled.div`
+export const EditModalContainer = styled.div`
     padding: 20px;
 `;

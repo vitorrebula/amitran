@@ -55,10 +55,6 @@ function App() {
       console.error('Erro ao buscar os serviços:', error);
     }
   };
-
-  useEffect(() => {
-    console.log(listaServico);
-  }, [listaServico]);
   
   useEffect(() => {
     const dataHoje = new Date().toISOString();

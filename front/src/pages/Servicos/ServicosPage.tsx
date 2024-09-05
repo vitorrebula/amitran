@@ -11,7 +11,7 @@ export interface Servico {
     enderecoOrigem: string;
     enderecoEntrega: string;
     dataInicio: string;
-    dataTermino?: string;
+    dataTermino: string;
     valor: number;
     descricao?: string;
     funcionarios: Funcionario[];

@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
-import * as styled from './AddModal.styles';
 import { Col, DatePicker, Form, Input, message, Modal, Row, Select, Tooltip } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
@@ -10,32 +9,64 @@ import { Funcionario } from '../../../Funcionarios/Funcionarios';
 import { Veiculo } from '../../../Veiculos/Veiculos';
 import axios from 'axios';
 import TextArea from 'antd/es/input/TextArea';
+import * as styled from './EditModal.styles';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
-interface AddModalProps {
-    showAddModal: boolean;
-    setShowAddModal: Dispatch<SetStateAction<boolean>>;
+interface EditarModalProps {
+    showEditarModal: boolean;
+    setShowEditarModal: Dispatch<SetStateAction<boolean>>;
     listaServico: Servico[];
     setListaServico: Dispatch<SetStateAction<Servico[]>>;
-    funcionarios: Funcionario[];
-    veiculos: Veiculo[];
+    listaFuncionario: Funcionario[];
+    listaVeiculo: Veiculo[];
+    servico?: Servico;
 }
 
-function AddModal(props: AddModalProps) {
-    const { showAddModal, setShowAddModal, listaServico, setListaServico, funcionarios, veiculos } = props;
-    const [datasPreenchidas, setDatasPreenchidas] = useState<boolean>(false);
-    const [dataInicio, setDataInicio] = useState<Dayjs | undefined>(undefined);
-    const [dataTermino, setDataTermino] = useState<Dayjs | undefined>(undefined);
+function EditarModal(props: EditarModalProps) {
+    const { showEditarModal, setShowEditarModal, listaServico, setListaServico, listaFuncionario, listaVeiculo, servico } = props;
+    const [datasPreenchidas, setDatasPreenchidas] = useState<boolean>(true);
+    const [dataInicio, setDataInicio] = useState<Dayjs | undefined>(dayjs(servico?.dataInicio));
+    const [dataTermino, setDataTermino] = useState<Dayjs | undefined>(dayjs(servico?.dataTermino));
 
     const [form] = Form.useForm();
 
+    useEffect(() => {
+        if(servico){
+            form.setFieldsValue({
+                nomeCliente: servico.nomeCliente,
+                enderecoOrigem: servico.enderecoOrigem,
+                enderecoEntrega: servico.enderecoEntrega,
+                dataInicio: dayjs(servico.dataInicio),
+                dataTermino: dayjs(servico.dataTermino),
+                valor: servico.valor,
+                descricao: servico.descricao,
+                motoristas: servico.funcionarios?.filter(f => f.cargo === 'Motorista').map(f => f.id),
+                ajudantes: servico.funcionarios?.filter(f => f.cargo === 'Ajudante').map(f => f.id),
+                veiculos: servico.veiculos?.map(v => v.placa),
+            });
+        }
+    }, [form, servico]);
+
     const handleClose = useCallback(() => {
-        setShowAddModal(false);
-        setDatasPreenchidas(false);
-    },[setShowAddModal, setDatasPreenchidas, form]);
+        setShowEditarModal(false);
+        if(servico){
+            form.setFieldsValue({
+                nomeCliente: servico.nomeCliente,
+                enderecoOrigem: servico.enderecoOrigem,
+                enderecoEntrega: servico.enderecoEntrega,
+                dataInicio: dayjs(servico.dataInicio),
+                dataTermino: dayjs(servico.dataTermino),
+                valor: servico.valor,
+                descricao: servico.descricao,
+                motoristas: servico.funcionarios?.filter(f => f.cargo === 'Motorista').map(f => f.id),
+                ajudantes: servico.funcionarios?.filter(f => f.cargo === 'Ajudante').map(f => f.id),
+                veiculos: servico.veiculos?.map(v => v.placa),
+            });
+        }
+    }, [setShowEditarModal, servico, form]);
 
     const verificarDatas = useCallback((dataInicio?: Dayjs, dataTermino?: Dayjs) => {
         if (dataInicio !== undefined) setDataInicio(dataInicio);
@@ -48,8 +79,13 @@ function AddModal(props: AddModalProps) {
         }
     }, [setDataInicio, setDataTermino]);
 
+    useEffect(() => {
+        form.setFieldsValue({ motoristas: [], ajudantes: [], veiculos: [] });
+    }, [dataInicio, dataTermino, form]);
+
     const getServicosConflitantes = useCallback((funcionarioId: number, dataInicio: Dayjs, dataTermino?: Dayjs) => {
         return listaServico?.filter(servico =>
+            servico.id !== props.servico?.id &&
             servico?.funcionarios?.some(f => f.id === funcionarioId) &&
             (
                 dayjs(dataInicio).isBetween(dayjs(servico?.dataInicio), dayjs(servico?.dataTermino), null, '[]') ||
@@ -58,7 +94,8 @@ function AddModal(props: AddModalProps) {
                     dayjs(servico?.dataTermino).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]'))
             )
         );
-    }, [listaServico]);
+    }, [listaServico, props.servico?.id]);
+    
 
     const getVeiculosConflitantes = useCallback((placa: string, dataInicio: Dayjs, dataTermino?: Dayjs) => {
         return listaServico?.filter(servico =>
@@ -73,15 +110,14 @@ function AddModal(props: AddModalProps) {
     }, [listaServico]);
 
     const veiculosDisponiveis = useMemo(() => {
-        return veiculos?.filter(veiculo => veiculo.status === 'Ativo');
-    }, [veiculos]);
-    
+        return listaVeiculo?.filter(veiculo => veiculo.status === 'Ativo');
+    }, [listaVeiculo]);
 
     const handleFinish = useCallback(async (values: any) => {
-        const dataInicio = dayjs(values.dataInicio);
-        const dataTermino = values.dataTermino ? dayjs(values.dataTermino) : undefined;
+        const dataInicio = dayjs(values.dataInicio).toISOString();
+        const dataTermino = dayjs(values.dataTermino).toISOString();
     
-        if (dataTermino && dataTermino.isBefore(dataInicio)) {
+        if (dataTermino && dayjs(dataTermino).isBefore(dayjs(dataInicio))) {
             message.error('A data de término não pode ser antes da data de início.');
             return;
         }
@@ -89,7 +125,7 @@ function AddModal(props: AddModalProps) {
         const funcionariosSelecionados: Funcionario[] = values.motoristas?.concat(values.ajudantes)
             .filter((id: number | undefined) => id !== undefined && id !== null)
             .map((id: number) => {
-                const funcionario = funcionarios.find(func => func.id === id);
+                const funcionario = listaFuncionario.find(func => func.id === id);
                 return funcionario as Funcionario;
             });
     
@@ -98,58 +134,55 @@ function AddModal(props: AddModalProps) {
             return;
         }
     
-        const newServico: Servico = {
+        const updatedServico: Servico = {
+            ...servico,
             nomeCliente: values.nomeCliente,
             enderecoOrigem: values.enderecoOrigem,
             enderecoEntrega: values.enderecoEntrega,
-            dataInicio: values.dataInicio.toISOString(),
-            dataTermino: values.dataTermino?.toISOString(),
+            dataInicio: dataInicio,
+            dataTermino: dataTermino,
             valor: values.valor || 0,
             descricao: values.descricao || '',
             funcionarios: funcionariosSelecionados,
         };
     
         if (values.veiculos && values.veiculos.length > 0) {
-            newServico.veiculos = values.veiculos.map((placa: string) => ({ placa } as Veiculo));
+            updatedServico.veiculos = values.veiculos.map((placa: string) => ({ placa } as Veiculo));
         }
     
         try {
-            const response = await axios.post('http://localhost:8080/servico', newServico);
-            
-            const servicoComId = { ...newServico, id: response.data.id };
-            
-            setListaServico(prev => [...prev, servicoComId]);
-            message.success('Serviço adicionado com sucesso!');
+            const response = await axios.put(`http://localhost:8080/servico`, updatedServico);
+    
+            const servicoAtualizado = { ...updatedServico, id: response.data.id };
+    
+            setListaServico(prev => prev.map(s => (s.id === servicoAtualizado.id ? servicoAtualizado : s)));
+            message.success('Serviço atualizado com sucesso!');
             handleClose();
         } catch (error) {
-            message.error('Erro ao adicionar o serviço. Tente novamente.');
-            console.error('Erro ao adicionar serviço:', error);
+            message.error('Erro ao atualizar o serviço. Tente novamente.');
+            console.error('Erro ao atualizar serviço:', error);
         }
-    }, [funcionarios, setListaServico, handleClose]);
+    }, [listaFuncionario, servico, setListaServico, handleClose]);
 
     const motoristas = useMemo(() => {
-        return funcionarios?.filter(func =>
+        return listaFuncionario?.filter(func =>
             (func.cargo === 'Motorista' || func.cargo === 'Chapa Motorista') &&
             func.status === 'Ativo'
         );
-    }, [funcionarios]);
-    
+    }, [listaFuncionario]);
+
     const ajudantes = useMemo(() => {
-        return funcionarios?.filter(func =>
+        return listaFuncionario?.filter(func =>
             (func.cargo === 'Ajudante' || func.cargo === 'Chapa Ajudante') &&
             func.status === 'Ativo'
         );
-    }, [funcionarios]);
-    
-    useEffect(() => {
-        form.setFieldsValue({ motoristas: [], ajudantes: [], veiculos: [] });
-    }, [dataInicio, dataTermino, form]);
+    }, [listaFuncionario]);
 
     return (
-        <styled.AddModalContainer>
+        <styled.EditModalContainer>
             <Modal
-                title="Adicionar Serviço"
-                open={showAddModal}
+                title="Editar Serviço"
+                open={showEditarModal}
                 centered
                 onOk={() => document.querySelector('form')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))}
                 onCancel={handleClose}
@@ -157,7 +190,7 @@ function AddModal(props: AddModalProps) {
                 onClose={handleClose}
                 destroyOnClose
             >
-                <Form layout="vertical" onFinish={handleFinish} form={form}>
+                <Form form={form} layout="vertical" onFinish={handleFinish}>
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
@@ -236,7 +269,7 @@ function AddModal(props: AddModalProps) {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item label="Ajudantes" name="ajudantes">
-                                    <Select mode="multiple" placeholder="Selecione os motoristas" disabled={!datasPreenchidas}>
+                                        <Select mode="multiple" placeholder="Selecione os motoristas" disabled={!datasPreenchidas}>
                                             {ajudantes.map(funcionario => {
                                                 const servicosConflitantes = getServicosConflitantes(funcionario.id, dataInicio!, dataTermino);
                                                 const optionDisabled = servicosConflitantes?.length > 0;
@@ -293,8 +326,8 @@ function AddModal(props: AddModalProps) {
                     </Row>
                 </Form>
             </Modal>
-        </styled.AddModalContainer>
+        </styled.EditModalContainer>
     );
 }
 
-export default AddModal;
+export default EditarModal;

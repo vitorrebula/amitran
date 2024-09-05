@@ -6,6 +6,8 @@ import isBetween from 'dayjs/plugin/isBetween';
 import { Servico } from '../../ServicosPage';
 import { saveAs } from 'file-saver';
 import { CardServicos } from './CardServicos';
+import { Funcionario } from '../../../Funcionarios/Funcionarios';
+import { Veiculo } from '../../../Veiculos/Veiculos';
 
 dayjs.extend(isBetween);
 
@@ -15,16 +17,18 @@ interface ListaServicosProps {
     setOpenListaServicos: Dispatch<SetStateAction<boolean>>;
     listaServico: Servico[];
     setListaServico: Dispatch<SetStateAction<Servico[]>>;
+    listaFuncionario: Funcionario[];
+    listaVeiculo: Veiculo[];
 }
 
 function ListaServicos(props: ListaServicosProps) {
-    const { listaServico, setListaServico, openListaServicos, setOpenListaServicos, selectedValue } = props;
+    const { listaServico, setListaServico, openListaServicos, setOpenListaServicos, selectedValue, listaFuncionario, listaVeiculo } = props;
     const dataSelecionada = selectedValue.format('DD/MM/YYYY');
 
     const filteredServicos = useMemo(() => {
         return listaServico.filter(servico => {
             const dataInicio = dayjs(servico.dataInicio);
-            const dataTermino = servico.dataTermino ? dayjs(servico.dataTermino).endOf('day') : dataInicio;
+            const dataTermino = dayjs(servico.dataTermino).endOf('day');
     
             return selectedValue.isBetween(dataInicio, dataTermino, null, '[]');
         });
@@ -69,9 +73,12 @@ function ListaServicos(props: ListaServicosProps) {
             >
                 {filteredServicos.length > 0 ? (
                     <CardServicos
+                        listaServico={listaServico}
                         setListaServico={setListaServico}
                         servicos={filteredServicos}
                         selectedValue={selectedValue}
+                        listaVeiculo={listaVeiculo}
+                        listaFuncionario={listaFuncionario}
                     />
                 ) : (
                     <h3 style={{textAlign: 'center'}}>Não há serviços cadastrados na data Selecionada</h3>

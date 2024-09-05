@@ -41,16 +41,16 @@ public class ServicoController {
         return ResponseEntity.ok().body(obj);
     }
 
-@GetMapping("/data/{data}")
-public ResponseEntity<List<Servico>> getServicoPorData(@PathVariable String data) {
-    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-    LocalDateTime localDateTime = LocalDateTime.parse(data, formatter);
-    ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneOffset.UTC);
-    LocalDateTime utcDateTime = zonedDateTime.toLocalDateTime();
-    
-    List<Servico> servicos = servicoService.getServicoPorData(utcDateTime);
-    return ResponseEntity.ok().body(servicos);
-}
+    @GetMapping("/data/{data}")
+    public ResponseEntity<List<Servico>> getServicoPorData(@PathVariable String data) {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        LocalDateTime localDateTime = LocalDateTime.parse(data, formatter);
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneOffset.UTC);
+        LocalDateTime utcDateTime = zonedDateTime.toLocalDateTime();
+        
+        List<Servico> servicos = servicoService.getServicoPorData(utcDateTime);
+        return ResponseEntity.ok().body(servicos);
+    }
 
     @GetMapping()
     public ResponseEntity<List<Servico>> findAll() {

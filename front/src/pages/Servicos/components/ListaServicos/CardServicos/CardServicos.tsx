@@ -7,21 +7,32 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { Veiculo } from '../../../../Veiculos/Veiculos';
 import { Funcionario } from '../../../../Funcionarios/Funcionarios';
 import dayjs from 'dayjs';
+import { EditModal } from '../../EditModal';
 
 interface CardServicosProps {
     servicos: Servico[];
     setListaServico: Dispatch<SetStateAction<Servico[]>>;
+    listaServico: Servico[];
     selectedValue: dayjs.Dayjs;
+    listaVeiculo: Veiculo[];
+    listaFuncionario: Funcionario[];
 }
 
 function CardServicos(props: CardServicosProps) {
-    const { servicos, setListaServico } = props;
+    const { servicos, setListaServico, listaServico, listaVeiculo, listaFuncionario } = props;
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [servicoToDelete, setServicoToDelete] = useState<Servico | null>(null);
+    const [servicoToEdit, setServicoToEdit] = useState<Servico | undefined>(undefined); 
 
     const showModal = (servico: Servico) => {
         setServicoToDelete(servico);
         setIsModalVisible(true);
+    };
+
+    const showEditModal = (servico: Servico) => {
+        setServicoToEdit(servico);
+        setIsEditModalVisible(true); 
     };
 
     const handleOk = async () => {
@@ -48,6 +59,7 @@ function CardServicos(props: CardServicosProps) {
             <EditOutlined
                 onClick={(event) => {
                     event.stopPropagation();
+                    showEditModal(servico);
                 }}
                 style={{ paddingRight: '15px' }}
             />
@@ -120,6 +132,15 @@ function CardServicos(props: CardServicosProps) {
                 expandIconPosition="start"
                 items={items}
                 bordered={false}
+            />
+            <EditModal
+                listaServico={listaServico}
+                showEditarModal={isEditModalVisible}
+                setShowEditarModal={setIsEditModalVisible}
+                servico={servicoToEdit}
+                setListaServico={setListaServico}
+                listaFuncionario={listaFuncionario}
+                listaVeiculo={listaVeiculo}
             />
             <Modal
                 title="Confirmar Exclusão"
