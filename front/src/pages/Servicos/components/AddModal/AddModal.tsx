@@ -35,6 +35,7 @@ function AddModal(props: AddModalProps) {
     const handleClose = useCallback(() => {
         setShowAddModal(false);
         setDatasPreenchidas(false);
+        form.resetFields();
     },[setShowAddModal, setDatasPreenchidas, form]);
 
     const verificarDatas = useCallback((dataInicio?: Dayjs, dataTermino?: Dayjs) => {
