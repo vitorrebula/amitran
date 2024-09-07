@@ -97,7 +97,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                 open={showEditVeiculo}
                 onClose={() => setShowEditVeiculo(false)}
                 extra={
-                    <Space style={{ position: 'absolute', bottom: '10px', left: '200px' }}>
+                    <Space style={{ position: 'absolute', bottom: '10px', left: '200px', zIndex: 3 }}>
                         <Button onClick={() => setShowEditVeiculo(false)}>Cancelar</Button>
                         <Button onClick={() => form.submit()} type="primary">
                             Alterar
@@ -184,7 +184,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                                     },
                                 ]}
                             >
-                                <Input.TextArea rows={3} placeholder="Caso queira, insira observações sobre o Veículo." />
+                                <Input.TextArea rows={2} placeholder="Caso queira, insira observações sobre o Veículo." />
                             </Form.Item>
                         </Col>
                     </Row>

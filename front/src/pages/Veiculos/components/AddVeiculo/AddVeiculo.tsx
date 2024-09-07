@@ -17,18 +17,28 @@ function AddVeiculo(props: AddVeiculoProps) {
 
     const [form] = Form.useForm();
 
-    const PostarVeiculo = async (values: any) => {
+    const PostarVeiculo = async (veiculo: Veiculo) => {
         try {
-            const response = await axios.post('http://localhost:8080/veiculo', values);
+            const formattedVeiculo = {
+                ...veiculo,
+                placa: veiculo.placa.toUpperCase(),
+            };
+
+            const response = await axios.post('http://localhost:8080/veiculo', formattedVeiculo);
             const novoVeiculo = response.data;
 
             setListaVeiculo(prev => [...prev, novoVeiculo]);
-            message.success('Veiculo adicionado com sucesso!');
+            message.success('Veículo adicionado com sucesso!');
 
             setShowAddVeiculo(false);
         } catch (error) {
             console.error("Erro ao enviar os dados:", error);
         }
+    };
+
+    const handlePlacaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.toUpperCase();
+        form.setFieldsValue({ placa: value });
     };
 
     return (
@@ -39,7 +49,7 @@ function AddVeiculo(props: AddVeiculoProps) {
                 open={showAddVeiculo}
                 onClose={() => setShowAddVeiculo(false)}
                 extra={
-                    <Space style={{ position: 'absolute', bottom: '10px', left: '200px' }}>
+                    <Space style={{ position: 'absolute', bottom: '10px', left: '200px', zIndex: 3 }}>
                         <Button onClick={() => setShowAddVeiculo(false)}>Cancel</Button>
                         <Button onClick={() => form.submit()} type="primary">
                             Enviar
@@ -69,9 +79,16 @@ function AddVeiculo(props: AddVeiculoProps) {
                             <Form.Item
                                 name="placa"
                                 label="Placa"
-                                rules={[{ required: true, message: 'Insira a Placa' }]}
+                                rules={[
+                                    { required: true, message: 'Insira a Placa' },
+                                    { len: 7, message: 'Insira placa válida.'},
+                                ]}
                             >
-                                <Input placeholder="Insira a Placa" />
+                                <Input
+                                    maxLength={7} 
+                                    placeholder="Insira a Placa"
+                                    onChange={handlePlacaChange} 
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -126,7 +143,7 @@ function AddVeiculo(props: AddVeiculoProps) {
                                     },
                                 ]}
                             >
-                                <Input.TextArea rows={4} placeholder="Caso queira, insira observações sobre o Veículo." />
+                                <Input.TextArea rows={2} placeholder="Caso queira, insira observações sobre o Veículo." />
                             </Form.Item>
                         </Col>
                     </Row>

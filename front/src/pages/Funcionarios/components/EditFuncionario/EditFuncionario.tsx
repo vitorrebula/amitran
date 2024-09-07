@@ -6,6 +6,7 @@ import { Funcionario } from '../../Funcionarios';
 import dayjs from 'dayjs';
 import { Servico } from '../../../Servicos/ServicosPage';
 import { ModalDelecao } from '../../../../components/ModalDelecao';
+import { MaskedInput } from 'antd-mask-input';
 
 interface EditFuncionarioProps {
     setShowEditFunc: Dispatch<SetStateAction<boolean>>;
@@ -30,6 +31,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 ...funcionario,
                 dataAdmissao: dayjs(funcionario.dataAdmissao),
                 tipoCNH: funcionario.tipoCNH,
+                cpf: formatarCPF(funcionario.cpf.toString()),
             });
         }
     }, [funcionario, form]);
@@ -52,7 +54,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
         }
     };
 
-    const handleConfirm = async () => {
+    const handleConfirmation = async () => {
         for (const servico of futureServicos) {
             const updatedService = {
                 ...servico,
@@ -75,6 +77,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
             const dataToSend = {
                 ...values,
                 id: funcionario?.id,
+                cpf: removerMascaraCPF(values.cpf.toString()),
                 dataAdmissao: formattedDate,
             };
 
@@ -92,12 +95,21 @@ function EditFuncionario(props: EditFuncionarioProps) {
         }
     };
 
+    const formatarCPF = (cpf: string) => {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    };
+
+    const removerMascaraCPF = (cpf: string) => {
+        return cpf.replace(/[^\d]/g, '');
+    };
+
     const handleClose = () => {
         if (funcionario) {
             form.setFieldsValue({
                 ...funcionario,
                 dataAdmissao: dayjs(funcionario.dataAdmissao),
                 tipoCNH: funcionario.tipoCNH,
+                cpf: formatarCPF(funcionario.cpf.toString()),
             });
         }
         setShowEditFunc(false);
@@ -111,7 +123,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 open={showEditFunc}
                 onClose={handleClose}
                 extra={
-                    <Space style={{ position: 'absolute', bottom: '10px', left: '200px' }}>
+                    <Space style={{ position: 'absolute', bottom: '10px', left: '200px', zIndex: 3 }}>
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button onClick={() => form.submit()} type="primary">
                             Alterar
@@ -185,9 +197,9 @@ function EditFuncionario(props: EditFuncionarioProps) {
                                 label="CPF"
                                 rules={[{ required: true, message: 'Insira o CPF' }]}
                             >
-                                <Input
+                                <MaskedInput
+                                    mask="000.000.000-00"
                                     placeholder="Insira o CPF"
-                                    maxLength={14}
                                 />
                             </Form.Item>
                         </Col>
@@ -220,7 +232,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                                     },
                                 ]}
                             >
-                                <Input.TextArea rows={3} placeholder="Caso queira, insira observações sobre o Funcionário." />
+                                <Input.TextArea rows={2} placeholder="Caso queira, insira observações sobre o Funcionário." />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -232,7 +244,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 item="funcionário"
                 futureServicos={futureServicos}
                 modalVisible={modalVisible}
-                handleConfirm={handleConfirm}
+                handleConfirm={handleConfirmation}
                 handleCancel={() => setModalVisible(false)}
             />
         </styled.EditFuncionarioContainer>

@@ -228,6 +228,7 @@ function EditarModal(props: EditarModalProps) {
                                     <Form.Item
                                         label="Data de Término"
                                         name="dataTermino"
+                                        rules={[{ required: true, message: 'Por favor, selecione a data de início' }]}
                                     >
                                         <DatePicker format="DD/MM/YYYY" onChange={(date) => verificarDatas(dataInicio, date ?? undefined)} />
                                     </Form.Item>

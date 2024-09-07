@@ -28,12 +28,12 @@ public class Servico {
 
     @Column(name = "enderecoOrigem", length = 100, nullable = false)
     @NotBlank(groups = CreateServico.class)
-    @Size(groups = CreateServico.class, min = 5, max = 100)
+    @Size(groups = CreateServico.class, max = 100)
     private String enderecoOrigem;
 
     @Column(name = "enderecoEntrega", length = 100, nullable = false)
     @NotBlank(groups = CreateServico.class)
-    @Size(groups = CreateServico.class, min = 5, max = 100)
+    @Size(groups = CreateServico.class, max = 100)
     private String enderecoEntrega;
 
     @Column(name = "dataInicio", nullable = false)

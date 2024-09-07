@@ -48,18 +48,29 @@ function App() {
 
   const buscaServicosPorFaixaDeData = async (data: string) => {
     try {
-      const response = await axios.get(`http://localhost:8080/servico/data/${data}`);
-      setListaServico(prevLista => [...prevLista, ...response.data]);
+      const response = await axios.get<Servico[]>(`http://localhost:8080/servico/data/${data}`);
+      setListaServico(prevLista => {
+        const novosServicos = response.data.filter(novoServico => 
+          !prevLista.some(servicoExistente => servicoExistente.id === novoServico.id)
+        );
+        return [...prevLista, ...novosServicos];
+      });
       setLastRequestDate(data);
     } catch (error) {
       console.error('Erro ao buscar os serviços:', error);
     }
   };
   
+  
+  
   useEffect(() => {
     const dataHoje = new Date().toISOString();
     buscaServicosPorFaixaDeData(dataHoje);
   }, []);
+
+  useEffect(() => {
+    console.log(listaServico);
+  }, [listaServico]);
 
   return (
     <Router>

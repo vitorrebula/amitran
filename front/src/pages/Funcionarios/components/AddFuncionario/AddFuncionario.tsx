@@ -4,6 +4,7 @@ import { Button, Col, DatePicker, Drawer, Form, Input, message, Row, Select, Spa
 import axios from 'axios';
 import { Funcionario } from '../../Funcionarios';
 import dayjs from 'dayjs';
+import MaskedInput from 'antd-mask-input';
 
 interface AddFuncionarioProps {
     setShowAddFunc: Dispatch<SetStateAction<boolean>>;
@@ -20,9 +21,12 @@ function AddFuncionario(props: AddFuncionarioProps) {
 
     const PostarFuncionario = async (values: any) => {
         try {
+            const cpfSemMascara = values.cpf.replace(/\D/g, '');
+
             const formattedDate = dayjs(values.dataAdmissao).toISOString();
             const dataToSend = {
                 ...values,
+                cpf: cpfSemMascara,
                 dataAdmissao: formattedDate,
             };
 
@@ -52,7 +56,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
                 open={showAddFunc}
                 onClose={handleClose}
                 extra={
-                    <Space style={{ position: 'absolute', bottom: '10px', left: '200px' }}>
+                    <Space style={{ position: 'absolute', bottom: '10px', left: '200px', zIndex: 3 }}>
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button onClick={() => form.submit()} type="primary">
                             Enviar
@@ -105,7 +109,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
                     </Row>
                     <Row gutter={16}>
                         <Col span={24}>
-                        <Form.Item
+                            <Form.Item
                                 name="cargo"
                                 label="Cargo"
                                 rules={[{ required: true, message: 'Selecione o Cargo' }]}
@@ -126,9 +130,9 @@ function AddFuncionario(props: AddFuncionarioProps) {
                                 label="CPF"
                                 rules={[{ required: true, message: 'Insira o CPF' }]}
                             >
-                                <Input
+                                <MaskedInput
+                                    mask="000.000.000-00"
                                     placeholder="Insira o CPF"
-                                    maxLength={14}
                                 />
                             </Form.Item>
                         </Col>
@@ -161,7 +165,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
                                     },
                                 ]}
                             >
-                                <Input.TextArea rows={4} placeholder="Caso queira, insira observações sobre o Funcionário." />
+                                <Input.TextArea rows={2} placeholder="Caso queira, insira observações sobre o Funcionário." />
                             </Form.Item>
                         </Col>
                     </Row>
