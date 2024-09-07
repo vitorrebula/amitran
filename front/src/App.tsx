@@ -68,10 +68,6 @@ function App() {
     buscaServicosPorFaixaDeData(dataHoje);
   }, []);
 
-  useEffect(() => {
-    console.log(listaServico);
-  }, [listaServico]);
-
   return (
     <Router>
       <Routes>
