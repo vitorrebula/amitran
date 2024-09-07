@@ -49,7 +49,7 @@ function App() {
   const buscaServicosPorFaixaDeData = async (data: string) => {
     try {
       const response = await axios.get(`http://localhost:8080/servico/data/${data}`);
-      setListaServico(response.data);
+      setListaServico(prevLista => [...prevLista, ...response.data]);
       setLastRequestDate(data);
     } catch (error) {
       console.error('Erro ao buscar os serviços:', error);
