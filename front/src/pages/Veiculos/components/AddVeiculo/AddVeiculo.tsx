@@ -24,7 +24,7 @@ function AddVeiculo(props: AddVeiculoProps) {
                 placa: veiculo.placa.toUpperCase(),
             };
 
-            const response = await axios.post('http://localhost:8080/veiculo', formattedVeiculo);
+            const response = await axios.post('http://192.168.0.13:8080/veiculo', formattedVeiculo);
             const novoVeiculo = response.data;
 
             setListaVeiculo(prev => [...prev, novoVeiculo]);

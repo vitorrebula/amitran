@@ -61,7 +61,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 funcionarios: servico.funcionarios.filter(f => f.id !== funcionario?.id)
             };
 
-            await axios.put(`http://localhost:8080/servico`, updatedService);
+            await axios.put(`http://192.168.0.13:8080/servico`, updatedService);
             setListaServico(prev =>
                 prev.map(s => s.id === servico.id ? updatedService : s)
             );
@@ -81,7 +81,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 dataAdmissao: formattedDate,
             };
 
-            const response = await axios.put('http://localhost:8080/Funcionario', dataToSend);
+            const response = await axios.put('http://192.168.0.13:8080/Funcionario', dataToSend);
             const funcionarioAtualizado = response.data;
             setListaFuncionario(prev =>
                 prev.map(funcionario =>

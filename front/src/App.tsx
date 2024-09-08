@@ -20,7 +20,7 @@ function App() {
 
   const buscaVeiculos = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/veiculo');
+      const response = await axios.get('http://192.168.0.13:8080/veiculo');
       setListaVeiculo(response.data);
     } catch (error) {
       console.error('Erro ao buscar a lista de veículos:', error);
@@ -34,7 +34,7 @@ function App() {
 
   const buscaFuncionarios = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/Funcionario');
+      const response = await axios.get('http://192.168.0.13:8080/Funcionario');
       setListaFuncionario(response.data);
     } catch (error) {
       console.error('Erro ao buscar a lista de funcionários:', error);
@@ -48,7 +48,7 @@ function App() {
 
   const buscaServicosPorFaixaDeData = async (data: string) => {
     try {
-      const response = await axios.get<Servico[]>(`http://localhost:8080/servico/data/${data}`);
+      const response = await axios.get<Servico[]>(`http://192.168.0.13:8080/servico/data/${data}`);
       setListaServico(prevLista => {
         const novosServicos = response.data.filter(novoServico => 
           !prevLista.some(servicoExistente => servicoExistente.id === novoServico.id)

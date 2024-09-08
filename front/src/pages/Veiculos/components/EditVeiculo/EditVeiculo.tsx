@@ -75,7 +75,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                 id: veiculo?.id,
             };
     
-            const response = await axios.put(`http://localhost:8080/veiculo/${veiculo?.placa}`, dataToSend);            
+            const response = await axios.put(`http://192.168.0.13:8080/veiculo/${veiculo?.placa}`, dataToSend);            
             const veiculoAtualizado = response.data; 
             setListaVeiculo(prev => 
                 prev.map(veiculo => 

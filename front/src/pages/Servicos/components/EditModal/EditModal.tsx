@@ -28,13 +28,15 @@ interface EditarModalProps {
 function EditarModal(props: EditarModalProps) {
     const { showEditarModal, setShowEditarModal, listaServico, setListaServico, listaFuncionario, listaVeiculo, servico } = props;
     const [datasPreenchidas, setDatasPreenchidas] = useState<boolean>(true);
-    const [dataInicio, setDataInicio] = useState<Dayjs | undefined>(dayjs(servico?.dataInicio));
-    const [dataTermino, setDataTermino] = useState<Dayjs | undefined>(dayjs(servico?.dataTermino));
+    const [dataInicio, setDataInicio] = useState<Dayjs | undefined>(undefined);
+    const [dataTermino, setDataTermino] = useState<Dayjs | undefined>(undefined);
 
     const [form] = Form.useForm();
 
     useEffect(() => {
-        if(servico){
+        if(showEditarModal && servico){
+            setDataInicio(dayjs(servico.dataInicio));
+            setDataTermino(dayjs(servico.dataTermino));
             form.setFieldsValue({
                 nomeCliente: servico.nomeCliente,
                 enderecoOrigem: servico.enderecoOrigem,
@@ -43,45 +45,39 @@ function EditarModal(props: EditarModalProps) {
                 dataTermino: dayjs(servico.dataTermino),
                 valor: servico.valor,
                 descricao: servico.descricao,
-                motoristas: servico.funcionarios?.filter(f => f.cargo === 'Motorista').map(f => f.id),
-                ajudantes: servico.funcionarios?.filter(f => f.cargo === 'Ajudante').map(f => f.id),
+                motoristas: servico.funcionarios?.filter(f => f.cargo === 'Motorista' || f.cargo === 'Chapa Motorista').map(f => f.id),
+                ajudantes: servico.funcionarios?.filter(f => f.cargo === 'Ajudante' || f.cargo === 'Chapa Ajudante').map(f => f.id),
                 veiculos: servico.veiculos?.map(v => v.placa),
             });
         }
-    }, [form, servico]);
+    }, [form, servico, showEditarModal]);
 
     const handleClose = useCallback(() => {
         setShowEditarModal(false);
-        if(servico){
-            form.setFieldsValue({
-                nomeCliente: servico.nomeCliente,
-                enderecoOrigem: servico.enderecoOrigem,
-                enderecoEntrega: servico.enderecoEntrega,
-                dataInicio: dayjs(servico.dataInicio),
-                dataTermino: dayjs(servico.dataTermino),
-                valor: servico.valor,
-                descricao: servico.descricao,
-                motoristas: servico.funcionarios?.filter(f => f.cargo === 'Motorista').map(f => f.id),
-                ajudantes: servico.funcionarios?.filter(f => f.cargo === 'Ajudante').map(f => f.id),
-                veiculos: servico.veiculos?.map(v => v.placa),
-            });
-        }
-    }, [setShowEditarModal, servico, form]);
+        form.resetFields();
+    }, [setShowEditarModal, form]);
 
-    const verificarDatas = useCallback((dataInicio?: Dayjs, dataTermino?: Dayjs) => {
-        if (dataInicio !== undefined) setDataInicio(dataInicio);
-        if (dataTermino !== undefined) setDataTermino(dataTermino);
+    const verificarDatas = useCallback((dataI?: Dayjs, dataT?: Dayjs) => {
+        if (dataI !== undefined) setDataInicio(dataI);
+        if (dataT !== undefined) setDataTermino(dataT);
 
         if (dataInicio && dataTermino) {
             setDatasPreenchidas(dataTermino.isSameOrAfter(dataInicio));
         } else {
             setDatasPreenchidas(false);
         }
-    }, [setDataInicio, setDataTermino]);
+    }, [setDataInicio, setDataTermino, dataInicio, dataTermino]);
 
-    useEffect(() => {
+    const verificaMudancaDeDatas = useCallback(() => {
+        const dataInicioAtual = form.getFieldValue('dataInicio');
+        const dataTerminoAtual = form.getFieldValue('dataTermino');
+    
+        if (!dataInicioAtual || !dataTerminoAtual) {
+            setDatasPreenchidas(false);
+        }
+        
         form.setFieldsValue({ motoristas: [], ajudantes: [], veiculos: [] });
-    }, [dataInicio, dataTermino, form]);
+    }, [form]);
 
     const getServicosConflitantes = useCallback((funcionarioId: number, dataInicio: Dayjs, dataTermino?: Dayjs) => {
         return listaServico?.filter(servico =>
@@ -151,7 +147,7 @@ function EditarModal(props: EditarModalProps) {
         }
     
         try {
-            const response = await axios.put(`http://localhost:8080/servico`, updatedServico);
+            const response = await axios.put(`http://192.168.0.13:8080/servico`, updatedServico);
     
             const servicoAtualizado = { ...updatedServico, id: response.data.id };
     
@@ -221,7 +217,7 @@ function EditarModal(props: EditarModalProps) {
                                         name="dataInicio"
                                         rules={[{ required: true, message: 'Por favor, selecione a data de início' }]}
                                     >
-                                        <DatePicker format="DD/MM/YYYY" onChange={(date) => verificarDatas(date ?? undefined, dataTermino)} />
+                                        <DatePicker format="DD/MM/YYYY" onChange={(date) => {verificarDatas(date ? date : undefined, dataTermino); verificaMudancaDeDatas();}} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -230,7 +226,7 @@ function EditarModal(props: EditarModalProps) {
                                         name="dataTermino"
                                         rules={[{ required: true, message: 'Por favor, selecione a data de início' }]}
                                     >
-                                        <DatePicker format="DD/MM/YYYY" onChange={(date) => verificarDatas(dataInicio, date ?? undefined)} />
+                                        <DatePicker format="DD/MM/YYYY" onChange={(date) => {verificarDatas(dataInicio, date ? date : undefined); verificaMudancaDeDatas();}} />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -270,8 +266,8 @@ function EditarModal(props: EditarModalProps) {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item label="Ajudantes" name="ajudantes">
-                                        <Select mode="multiple" placeholder="Selecione os motoristas" disabled={!datasPreenchidas}>
-                                            {ajudantes.map(funcionario => {
+                                        <Select mode="multiple" placeholder="Selecione os ajudantes" disabled={!datasPreenchidas}>
+                                        {ajudantes.map(funcionario => {
                                                 const servicosConflitantes = getServicosConflitantes(funcionario.id, dataInicio!, dataTermino);
                                                 const optionDisabled = servicosConflitantes?.length > 0;
 
