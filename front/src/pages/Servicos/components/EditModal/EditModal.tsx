@@ -188,7 +188,7 @@ function EditarModal(props: EditarModalProps) {
             >
                 <Form form={form} layout="vertical" onFinish={handleFinish}>
                     <Row gutter={16}>
-                        <Col span={12}>
+                        <Col xs={24} md={12}>
                             <Form.Item
                                 label="Nome do Cliente"
                                 name="nomeCliente"
@@ -238,7 +238,7 @@ function EditarModal(props: EditarModalProps) {
                                 <Input type="number" min={0} step="0.01" />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col xs={24} md={12}>
                             <Row gutter={16}>
                                 <Col span={12}>
                                     <Form.Item label="Motoristas" name="motoristas">
