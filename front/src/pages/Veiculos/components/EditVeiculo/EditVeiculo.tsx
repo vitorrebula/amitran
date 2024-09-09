@@ -58,7 +58,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                 veiculos: servico.veiculos?.filter(v => v.id !== veiculo?.id)
             };
 
-            await axios.put(`http://localhost:8080/servico`, updatedService);
+            await axios.put(`http://192.168.0.230:8080/servico`, updatedService);
             setListaServico(prev =>
                 prev.map(s => s.id === servico.id ? updatedService : s)
             );
@@ -72,14 +72,13 @@ function EditVeiculo(props: EditVeiculoProps) {
         try {
             const dataToSend = {
                 ...values,
-                id: veiculo?.id,
             };
     
-            const response = await axios.put(`http://192.168.0.13:8080/veiculo/${veiculo?.placa}`, dataToSend);            
+            const response = await axios.put(`http://192.168.0.230:8080/veiculo/${veiculo?.placa}`, dataToSend);            
             const veiculoAtualizado = response.data; 
             setListaVeiculo(prev => 
                 prev.map(veiculo => 
-                    veiculo.id === veiculoAtualizado.id ? veiculoAtualizado : veiculo
+                    veiculo.placa === veiculoAtualizado.placa ? veiculoAtualizado : veiculo
                 )
             );
             message.success('Veículo editado com sucesso!');

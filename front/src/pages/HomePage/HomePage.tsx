@@ -14,6 +14,7 @@ function HomePage(props: HomePageProps) {
     return(
         <styled.HomePageContainer>
             <Navbar />
+            <div style={{fontSize: '2rem', width: '100%', textAlign: 'center', height: '300px', alignItems: 'center'}}><h2>Ainda to fazendo, aguenta aí</h2></div>
         </styled.HomePageContainer>
     );
 }

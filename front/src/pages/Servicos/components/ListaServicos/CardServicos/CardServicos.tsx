@@ -38,7 +38,7 @@ function CardServicos(props: CardServicosProps) {
     const handleOk = async () => {
         if (servicoToDelete) {
             try {
-                await axios.delete(`http://192.168.0.13:8080/servico/${servicoToDelete.id}`);
+                await axios.delete(`http://192.168.0.230:8080/servico/${servicoToDelete.id}`);
                 setListaServico(prevServicos => prevServicos.filter(servico => servico.id !== servicoToDelete.id));
                 message.success('Serviço excluído com sucesso.');
             } catch (error) {

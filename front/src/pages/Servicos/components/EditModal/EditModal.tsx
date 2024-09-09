@@ -147,7 +147,7 @@ function EditarModal(props: EditarModalProps) {
         }
     
         try {
-            const response = await axios.put(`http://192.168.0.13:8080/servico`, updatedServico);
+            const response = await axios.put(`http://192.168.0.230:8080/servico`, updatedServico);
     
             const servicoAtualizado = { ...updatedServico, id: response.data.id };
     

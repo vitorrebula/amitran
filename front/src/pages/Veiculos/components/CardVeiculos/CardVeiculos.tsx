@@ -43,7 +43,7 @@ function CardVeiculo(props: CardVeiculoProps) {
 
     const deleteVeiculo = async (placa: string) => {
         try {
-            await axios.delete(`http://192.168.0.13:8080/veiculo/${placa}`);
+            await axios.delete(`http://192.168.0.230:8080/veiculo/${placa}`);
 
 
             const updatedServicos = listaServico.map(servico => ({
@@ -94,7 +94,7 @@ function CardVeiculo(props: CardVeiculoProps) {
                     title={veiculo.placa}
                     description={
                         <>
-                            <h3>{veiculo.tipoVeiculo}</h3>
+                            <h3>{`${veiculo.tipoVeiculo} - ${veiculo.status} `}</h3>
                             <p>{veiculo.modelo}</p>
                         </>
                     }

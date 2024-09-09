@@ -115,7 +115,7 @@ function AddModal(props: AddModalProps) {
         }
     
         try {
-            const response = await axios.post('http://192.168.0.13:8080/servico', newServico);
+            const response = await axios.post('http://192.168.0.230:8080/servico', newServico);
             
             const servicoComId = { ...newServico, id: response.data.id };
             

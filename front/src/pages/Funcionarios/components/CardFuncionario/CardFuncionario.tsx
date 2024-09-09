@@ -39,7 +39,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
 
     const deleteFuncionario = async (id: number) => {
         try {
-            await axios.delete(`http://192.168.0.13:8080/Funcionario/${id}`);
+            await axios.delete(`http://192.168.0.230:8080/Funcionario/${id}`);
 
             const updatedServicos = listaServico.map(servico => ({
                 ...servico,
