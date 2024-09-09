@@ -30,7 +30,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
                 dataAdmissao: formattedDate,
             };
 
-            const response = await axios.post('http://192.168.0.230:8080/Funcionario', dataToSend);
+            const response = await axios.post('http://192.168.0.149:8080/Funcionario', dataToSend);
             const novoFuncionario = response.data;
 
             setListaFuncionario(prev => [...prev, novoFuncionario]);
