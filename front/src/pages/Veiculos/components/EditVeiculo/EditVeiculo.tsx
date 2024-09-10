@@ -6,6 +6,7 @@ import { Veiculo } from '../../Veiculos';
 import dayjs from 'dayjs';
 import { Servico } from '../../../Servicos/ServicosPage';
 import { ModalDelecao } from '../../../../components/ModalDelecao';
+import { url } from '../../../../url';
 
 interface EditVeiculoProps {
     setShowEditVeiculo: Dispatch<SetStateAction<boolean>>;
@@ -58,7 +59,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                 veiculos: servico.veiculos?.filter(v => v.id !== veiculo?.id)
             };
 
-            await axios.put(`http://192.168.0.230:8080/servico`, updatedService);
+            await axios.put(`${url}/servico`, updatedService);
             setListaServico(prev =>
                 prev.map(s => s.id === servico.id ? updatedService : s)
             );
@@ -74,7 +75,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                 ...values,
             };
     
-            const response = await axios.put(`http://192.168.0.230:8080/veiculo/${veiculo?.placa}`, dataToSend);            
+            const response = await axios.put(`${url}/${veiculo?.placa}`, dataToSend);            
             const veiculoAtualizado = response.data; 
             setListaVeiculo(prev => 
                 prev.map(veiculo => 

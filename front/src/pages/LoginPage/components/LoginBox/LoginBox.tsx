@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
 import emailjs from '@emailjs/browser';
 import axios from 'axios';
+import { url } from '../../../../url';
 
 interface Login {
     email: string;
@@ -22,7 +23,7 @@ function LoginBox() {
 
     const fetchLogin = async () => {
         try {
-            const response = await axios.get<Login>('http://192.168.0.230:8080/admin/1');
+            const response = await axios.get<Login>(`${url}/admin/1`);
             setAdminData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);

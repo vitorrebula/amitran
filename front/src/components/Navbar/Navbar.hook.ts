@@ -1,5 +1,5 @@
 import { MenuProps } from "antd";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function useNavbar(){

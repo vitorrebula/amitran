@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Servico } from '../../../Servicos/ServicosPage';
 import dayjs from 'dayjs';
 import { ModalDelecao } from '../../../../components/ModalDelecao';
+import { url } from '../../../../url';
 
 interface CardFuncionarioProps {
     funcionario: Funcionario;
@@ -39,7 +40,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
 
     const deleteFuncionario = async (id: number) => {
         try {
-            await axios.delete(`http://192.168.0.230:8080/Funcionario/${id}`);
+            await axios.delete(`${url}/Funcionario/${id}`);
 
             const updatedServicos = listaServico.map(servico => ({
                 ...servico,

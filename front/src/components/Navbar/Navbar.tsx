@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { IoHome } from "react-icons/io5";
 import { RiTeamFill } from "react-icons/ri";
 import { FaTruckMoving } from "react-icons/fa";
@@ -6,7 +5,6 @@ import { FaPeopleCarry } from "react-icons/fa";
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import * as styled from './Navbar.styles';
-import { useNavigate } from 'react-router-dom';
 import useNavbar from './Navbar.hook';
 
 type MenuItem = Required<MenuProps>['items'][number];
