@@ -1,20 +1,29 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import * as styled from './HomePage.styles';
 import { Navbar } from '../../components/Navbar';
-import { Funcionario } from '../Funcionarios/Funcionarios';
+import { VeiculosIndicator } from './components/VeiculosIndicator';
+import { Veiculo } from '../Veiculos/Veiculos';
+import { Servico } from '../Servicos/ServicosPage';
+import { Collapse } from 'antd'; 
+
+const { Panel } = Collapse; 
 
 interface HomePageProps {
-    listaDeFuncionarios: Funcionario[];
-    setListaDeFuncionarios: Dispatch<SetStateAction<Funcionario[]>>;
+    listaVeiculo: Veiculo[];
+    listaServico: Servico[];
 }
 
 function HomePage(props: HomePageProps) {
-    const {listaDeFuncionarios, setListaDeFuncionarios} = props;
-      
-    return(
+    const { listaServico, listaVeiculo } = props;
+
+    return (
         <styled.HomePageContainer>
             <Navbar />
-            <div style={{fontSize: '2rem', width: '100%', textAlign: 'center', height: '300px', alignItems: 'center'}}><h2>Ainda to fazendo, aguenta aí</h2></div>
+            <Collapse accordion defaultActiveKey={['1']} style={{backgroundColor: 'white', margin: '20px'}}>
+                <Panel header="Rotas de Veículos" key="1">
+                    <VeiculosIndicator listaVeiculo={listaVeiculo} listaServico={listaServico} />
+                </Panel>
+            </Collapse>
         </styled.HomePageContainer>
     );
 }

@@ -20,7 +20,7 @@ function App() {
 
   const buscaVeiculos = async () => {
     try {
-      const response = await axios.get('http://192.168.0.230:8080/veiculo');
+      const response = await axios.get('http://localhost:8080/veiculo');
       setListaVeiculo(response.data);
     } catch (error) {
       console.error('Erro ao buscar a lista de veículos:', error);
@@ -34,7 +34,7 @@ function App() {
 
   const buscaFuncionarios = async () => {
     try {
-      const response = await axios.get('http://192.168.0.230:8080/Funcionario');
+      const response = await axios.get('http://localhost:8080/Funcionario');
       setListaFuncionario(response.data);
     } catch (error) {
       console.error('Erro ao buscar a lista de funcionários:', error);
@@ -48,7 +48,7 @@ function App() {
 
   const buscaServicosPorFaixaDeData = async (data: string) => {
     try {
-      const response = await axios.get<Servico[]>(`http://192.168.0.230:8080/servico/data/${data}`);
+      const response = await axios.get<Servico[]>(`http://localhost:8080/servico/data/${data}`);
       setListaServico(prevLista => {
         const novosServicos = response.data.filter(novoServico => 
           !prevLista.some(servicoExistente => servicoExistente.id === novoServico.id)
@@ -72,7 +72,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<PrivateRoute><HomePage listaDeFuncionarios={listaFuncionario} setListaDeFuncionarios={setListaFuncionario} /></PrivateRoute>} />
+        <Route path="/home" element={<PrivateRoute><HomePage listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
         <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaServico={listaServico} setListaServico={setListaServico} listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/veiculos" element={<PrivateRoute><Veiculos listaServico={listaServico} setListaServico={setListaServico} listaVeiculo={listaVeiculo} setListaVeiculo={setListaVeiculo} /></PrivateRoute>} />
         <Route path="/servicos" element={<PrivateRoute><ServicosPage buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} setListaServico={setListaServico} listaServico={listaServico} /></PrivateRoute>} />
