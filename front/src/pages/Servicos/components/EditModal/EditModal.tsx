@@ -105,7 +105,7 @@ function EditarModal(props: EditarModalProps) {
                     dayjs(servico?.dataTermino).isBetween(dataInicio, dataTermino ?? dataInicio, null, '[]'))
             )
         );
-    }, [listaServico]);
+    }, [listaServico, props.servico?.id]);
 
     const veiculosDisponiveis = useMemo(() => {
         return listaVeiculo?.filter(veiculo => veiculo.status === 'Ativo');
