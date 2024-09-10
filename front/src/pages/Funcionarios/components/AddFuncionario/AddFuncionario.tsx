@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Funcionario } from '../../Funcionarios';
 import dayjs from 'dayjs';
 import MaskedInput from 'antd-mask-input';
+import { url } from '../../../../url';
 
 interface AddFuncionarioProps {
     setShowAddFunc: Dispatch<SetStateAction<boolean>>;
@@ -30,7 +31,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
                 dataAdmissao: formattedDate,
             };
 
-            const response = await axios.post('http://192.168.0.230:8080/Funcionario', dataToSend);
+            const response = await axios.post(`${url}/Funcionario`, dataToSend);
             const novoFuncionario = response.data;
 
             setListaFuncionario(prev => [...prev, novoFuncionario]);

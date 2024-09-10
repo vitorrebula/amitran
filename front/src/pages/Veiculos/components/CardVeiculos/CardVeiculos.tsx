@@ -12,6 +12,7 @@ import axios from 'axios';
 import { Servico } from '../../../Servicos/ServicosPage';
 import dayjs from 'dayjs';
 import { ModalDelecao } from '../../../../components/ModalDelecao';
+import { url } from '../../../../url';
 
 interface CardVeiculoProps {
     veiculo: Veiculo;
@@ -43,8 +44,7 @@ function CardVeiculo(props: CardVeiculoProps) {
 
     const deleteVeiculo = async (placa: string) => {
         try {
-            await axios.delete(`http://192.168.0.230:8080/veiculo/${placa}`);
-
+            await axios.delete(`${url}/veiculo/${placa}`);
 
             const updatedServicos = listaServico.map(servico => ({
                 ...servico,

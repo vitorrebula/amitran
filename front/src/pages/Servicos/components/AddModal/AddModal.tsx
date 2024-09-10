@@ -10,6 +10,7 @@ import { Funcionario } from '../../../Funcionarios/Funcionarios';
 import { Veiculo } from '../../../Veiculos/Veiculos';
 import axios from 'axios';
 import TextArea from 'antd/es/input/TextArea';
+import { url } from '../../../../url';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
@@ -115,7 +116,7 @@ function AddModal(props: AddModalProps) {
         }
     
         try {
-            const response = await axios.post('http://192.168.0.230:8080/servico', newServico);
+            const response = await axios.post(`${url}/servico`, newServico);
             
             const servicoComId = { ...newServico, id: response.data.id };
             

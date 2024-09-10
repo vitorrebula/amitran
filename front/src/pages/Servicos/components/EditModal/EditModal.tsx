@@ -10,6 +10,7 @@ import { Veiculo } from '../../../Veiculos/Veiculos';
 import axios from 'axios';
 import TextArea from 'antd/es/input/TextArea';
 import * as styled from './EditModal.styles';
+import { url } from '../../../../url';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
@@ -147,7 +148,7 @@ function EditarModal(props: EditarModalProps) {
         }
     
         try {
-            const response = await axios.put(`http://192.168.0.230:8080/servico`, updatedServico);
+            const response = await axios.put(`${url}/servico`, updatedServico);
     
             const servicoAtualizado = { ...updatedServico, id: response.data.id };
     

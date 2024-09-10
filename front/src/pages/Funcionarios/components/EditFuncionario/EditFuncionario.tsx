@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import { Servico } from '../../../Servicos/ServicosPage';
 import { ModalDelecao } from '../../../../components/ModalDelecao';
 import { MaskedInput } from 'antd-mask-input';
+import { url } from '../../../../url';
 
 interface EditFuncionarioProps {
     setShowEditFunc: Dispatch<SetStateAction<boolean>>;
@@ -61,7 +62,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 funcionarios: servico.funcionarios.filter(f => f.id !== funcionario?.id)
             };
 
-            await axios.put(`http://192.168.0.230:8080/servico`, updatedService);
+            await axios.put(`${url}/servico`, updatedService);
             setListaServico(prev =>
                 prev.map(s => s.id === servico.id ? updatedService : s)
             );
@@ -81,7 +82,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 dataAdmissao: formattedDate,
             };
 
-            const response = await axios.put('http://192.168.0.230:8080/Funcionario', dataToSend);
+            const response = await axios.put(`${url}/Funcionario`, dataToSend);
             const funcionarioAtualizado = response.data;
             setListaFuncionario(prev =>
                 prev.map(funcionario =>
