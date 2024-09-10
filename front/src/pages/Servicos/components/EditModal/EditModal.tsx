@@ -96,6 +96,7 @@ function EditarModal(props: EditarModalProps) {
 
     const getVeiculosConflitantes = useCallback((placa: string, dataInicio: Dayjs, dataTermino?: Dayjs) => {
         return listaServico?.filter(servico =>
+            servico.id !== props.servico?.id &&
             servico?.veiculos?.some(v => v.placa === placa) &&
             (
                 dayjs(dataInicio).isBetween(dayjs(servico?.dataInicio), dayjs(servico?.dataTermino), null, '[]') ||
