@@ -41,15 +41,16 @@ public class ServicoService {
         return servicoRepository.findAll();
     }
 
-public List<Servico> getServicoPorData(LocalDateTime data) {
-    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-    String dataInicio = data.minus(1, ChronoUnit.MONTHS).format(formatter);
-    String dataTermino = data.plus(5, ChronoUnit.MONTHS).format(formatter);
-    return servicoRepository.findByDataInicioBetween(dataInicio, dataTermino);
-}
+    public List<Servico> getServicoPorData(LocalDateTime data) {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        String dataInicio = data.minus(1, ChronoUnit.MONTHS).format(formatter);
+        String dataTermino = data.plus(5, ChronoUnit.MONTHS).format(formatter);
+        return servicoRepository.findByDataInicioBetween(dataInicio, dataTermino);
+    }
 
     @Transactional
     public Servico create(Servico obj) {
+        verificarConflitos(obj);
         obj.setId(null);
         obj = this.servicoRepository.save(obj);
         return obj;
@@ -57,6 +58,7 @@ public List<Servico> getServicoPorData(LocalDateTime data) {
 
     @Transactional
     public Servico update(Servico obj) {
+        verificarConflitos(obj);
         Servico newObj = findById(obj.getId());
         newObj.setNomeCliente(obj.getNomeCliente());
         newObj.setEnderecoOrigem(obj.getEnderecoOrigem());
@@ -68,6 +70,35 @@ public List<Servico> getServicoPorData(LocalDateTime data) {
         newObj.setFuncionarios(obj.getFuncionarios());
         newObj.setVeiculos(obj.getVeiculos());
         return this.servicoRepository.save(newObj);
+    }
+
+    private void verificarConflitos(Servico obj) {
+        List<Servico> servicosExistentes = servicoRepository.findByDataInicioBetween(
+            obj.getDataInicio().toString(),
+            obj.getDataTermino().toString()
+        );
+        
+        for (Veiculo veiculo : obj.getVeiculos()) {
+            for (Servico servico : servicosExistentes) {
+                if (!servico.getId().equals(obj.getId()) && 
+                    servico.getVeiculos().contains(veiculo)) {
+                    throw new RuntimeException("Conflito: Veículo " + veiculo.getPlaca() + 
+                        " já está alocado para o serviço " + servico.getNomeCliente() + 
+                        " no período selecionado.");
+                }
+            }
+        }
+        
+        for (Funcionario funcionario : obj.getFuncionarios()) {
+            for (Servico servico : servicosExistentes) {
+                if (!servico.getId().equals(obj.getId()) && 
+                    servico.getFuncionarios().contains(funcionario)) {
+                    throw new RuntimeException("Conflito: Funcionário " + funcionario.getUsername() + 
+                        " já está alocado para o serviço " + servico.getNomeCliente() + 
+                        " no período selecionado.");
+                }
+            }
+        }
     }
 
     public void delete(Long id) {
