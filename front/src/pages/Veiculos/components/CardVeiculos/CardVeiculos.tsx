@@ -33,14 +33,9 @@ function CardVeiculo(props: CardVeiculoProps) {
             servico.veiculos?.some(v => v.placa === veiculo.placa)
         );
 
-        if (futureServices.length > 0) {
-            setFutureServicos(futureServices); 
-            setModalVisible(true); 
-        } else {
-            deleteVeiculo(veiculo.placa); 
-        }
+        setFutureServicos(futureServices);  // Armazena serviços futuros, se houver
+        setModalVisible(true);  // Exibe o modal independentemente de serviços futuros
     };
-
 
     const deleteVeiculo = async (placa: string) => {
         try {
@@ -54,14 +49,15 @@ function CardVeiculo(props: CardVeiculoProps) {
             setListaServico(updatedServicos);
             setListaVeiculo(prev => prev.filter(veiculo => veiculo.placa !== placa));
             message.success('Veículo removido com sucesso!');
-            setModalVisible(false); 
+            setModalVisible(false);  // Fecha o modal após exclusão bem-sucedida
         } catch (error) {
             console.error("Erro ao deletar o veículo:", error);
+            message.error('Erro ao remover o veículo.');
         }
     };
 
     const handleConfirmDelete = () => {
-        deleteVeiculo(veiculo.placa);
+        deleteVeiculo(veiculo.placa);  // Só exclui o veículo após a confirmação do usuário
     };
 
     const renderIcon = () => {
@@ -106,8 +102,8 @@ function CardVeiculo(props: CardVeiculoProps) {
                 item="veículo"
                 futureServicos={futureServicos}
                 modalVisible={modalVisible}
-                handleConfirm={handleConfirmDelete}
-                handleCancel={() => setModalVisible(false)}
+                handleConfirm={handleConfirmDelete} 
+                handleCancel={() => setModalVisible(false)} 
             />
         </styled.CardVeiculoContainer>
     );

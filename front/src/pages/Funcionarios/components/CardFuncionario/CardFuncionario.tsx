@@ -30,12 +30,8 @@ function CardFuncionario(props: CardFuncionarioProps) {
             servico.funcionarios.some(f => f.id === funcionario.id)
         );
 
-        if (futureServices.length > 0) {
-            setFutureServicos(futureServices);
-            setModalVisible(true);
-        } else {
-            deleteFuncionario(funcionario.id);
-        }
+        setFutureServicos(futureServices);
+        setModalVisible(true); 
     };
 
     const deleteFuncionario = async (id: number) => {
@@ -53,6 +49,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
             setModalVisible(false);
         } catch (error) {
             console.error("Erro ao deletar o funcionário:", error);
+            message.error('Erro ao remover o funcionário.');
         }
     };
 
@@ -85,7 +82,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
                 item="funcionário"
                 futureServicos={futureServicos}
                 modalVisible={modalVisible}
-                handleConfirm={handleConfirmDelete}
+                handleConfirm={handleConfirmDelete} 
                 handleCancel={() => setModalVisible(false)}
             />
         </styled.CardFuncionarioContainer>
