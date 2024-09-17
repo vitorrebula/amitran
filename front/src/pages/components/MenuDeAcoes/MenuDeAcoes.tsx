@@ -36,7 +36,7 @@ function MenuDeAcoes(props: MenuDeAcoesProps) {
                         <Checkbox onChange={(e) => handleCheckboxChange(e)}>Mostrar Inativos?</Checkbox>
                     ) : null}
                 </div>
-                <Search className='search' placeholder="input search text" onChange={handleSearchChange} enterButton />
+                <Search className='search' placeholder="Faça uma busca personalizada" onChange={handleSearchChange} enterButton />
             </styled.MenuDeAcoes>
             <Divider style={{ margin: 0 }} />
         </>
