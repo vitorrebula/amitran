@@ -22,7 +22,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
     const { funcionario, setShowEditFunc, setListaFuncionario, listaServico, setListaServico } = props;
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [futureServicos, setFutureServicos] = useState<Servico[]>([]);
-    const avatarSeed = encodeURIComponent(funcionario.username);
+    const avatarSeed = encodeURIComponent(funcionario.nome);
 
     const handleDelete = () => {
         const futureServices = listaServico.filter(servico =>
@@ -67,7 +67,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
             <Card actions={action} style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.4)" }}>
                 <Card.Meta
                     avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${avatarSeed}`} />} 
-                    title={funcionario.username}
+                    title={funcionario.nome}
                     description={
                         <>
                             <h3>{funcionario.cargo}</h3>
@@ -78,7 +78,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
             </Card>
 
             <ModalDelecao
-                title={`Excluir ${funcionario.username}?`}
+                title={`Excluir ${funcionario.nome}?`}
                 item="funcionário"
                 futureServicos={futureServicos}
                 modalVisible={modalVisible}

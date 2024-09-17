@@ -93,7 +93,7 @@ public class ServicoService {
             for (Servico servico : servicosExistentes) {
                 if (!servico.getId().equals(obj.getId()) && 
                     servico.getFuncionarios().contains(funcionario)) {
-                    throw new RuntimeException("Conflito: Funcionário " + funcionario.getUsername() + 
+                    throw new RuntimeException("Conflito: Funcionário " + funcionario.getNome() + 
                         " já está alocado para o serviço " + servico.getNomeCliente() + 
                         " no período selecionado.");
                 }

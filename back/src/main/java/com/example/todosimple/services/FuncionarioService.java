@@ -45,7 +45,7 @@ public class FuncionarioService {
         newObj.setDataAdmissao(obj.getDataAdmissao());
         newObj.setTipoCNH(obj.getTipoCNH());
         newObj.setCargo(obj.getCargo());
-        newObj.setUsername(obj.getUsername());
+        newObj.setNome(obj.getNome());
         newObj.setStatus(obj.getStatus());
         newObj.setObservacoes(obj.getObservacoes());
         newObj.setServicos(obj.getServicos());

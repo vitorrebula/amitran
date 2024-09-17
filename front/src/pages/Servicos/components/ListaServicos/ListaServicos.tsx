@@ -39,7 +39,7 @@ function ListaServicos(props: ListaServicosProps) {
 
         filteredServicos.forEach(servico => {
             const funcionarios = servico.funcionarios
-                .map(f => `${f.cargo}: ${f.username}`)
+                .map(f => `${f.cargo}: ${f.nome}`)
                 .join('\n');
 
             const veiculos = servico.veiculos?.map(v => v.placa).join(', ') || '';

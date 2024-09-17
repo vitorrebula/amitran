@@ -10,7 +10,7 @@ import { Servico } from '../Servicos/ServicosPage';
 
 export interface Funcionario {
     id: number;
-    username: string;
+    nome: string;
     cargo: string;
     cpf: number;
     tipoCNH: string;
@@ -48,8 +48,8 @@ function Funcionarios(props: FuncionariosProps) {
             <styled.ListaFuncionarios>
             {showInativos ? (
                     listaFuncionario
-                        .filter(funcionario => funcionario.username.toLowerCase().includes(searchText.toLowerCase()))
-                        .sort((a, b) => a.username.localeCompare(b.username))
+                        .filter(funcionario => funcionario.nome.toLowerCase().includes(searchText.toLowerCase()))
+                        .sort((a, b) => a.nome.localeCompare(b.nome))
                         .map(funcionario => (
                             <CardFuncionario
                                 key={funcionario.id}
@@ -62,8 +62,8 @@ function Funcionarios(props: FuncionariosProps) {
                         ))
                 ) : (
                     listaFuncionario
-                        .filter(funcionario => funcionario.status === 'Ativo' && funcionario.username.toLowerCase().includes(searchText.toLowerCase()))
-                        .sort((a, b) => a.username.localeCompare(b.username))
+                        .filter(funcionario => funcionario.status === 'Ativo' && funcionario.nome.toLowerCase().includes(searchText.toLowerCase()))
+                        .sort((a, b) => a.nome.localeCompare(b.nome))
                         .map(funcionario => (
                             <CardFuncionario
                                 key={funcionario.id}

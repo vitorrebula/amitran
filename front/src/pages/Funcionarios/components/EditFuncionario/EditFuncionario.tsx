@@ -141,7 +141,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                     <Row gutter={16}>
                         <Col span={24}>
                             <Form.Item
-                                name="username"
+                                name="nome"
                                 label="Name"
                                 rules={[{ required: true, message: 'Insira o Nome' }]}
                             >
@@ -241,7 +241,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
             </Drawer>
 
             <ModalDelecao
-                title={`Inativar ${funcionario?.username}?`}
+                title={`Inativar ${funcionario?.nome}?`}
                 item="funcionário"
                 futureServicos={futureServicos}
                 modalVisible={modalVisible}

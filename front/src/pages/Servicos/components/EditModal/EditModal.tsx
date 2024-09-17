@@ -257,7 +257,7 @@ function EditarModal(props: EditarModalProps) {
                                                                     `${servico.nomeCliente} ${dayjs(servico.dataInicio).format('DD/MM/YYYY')} - ${dayjs(servico.dataTermino).format('DD/MM/YYYY')} \n`
                                                                 )).join(', ') :
                                                                 ''}>
-                                                            {funcionario.username}
+                                                            {funcionario.nome}
                                                         </Tooltip>
                                                     </Select.Option>
                                                 );
@@ -281,7 +281,7 @@ function EditarModal(props: EditarModalProps) {
                                                                     `${servico.nomeCliente} ${dayjs(servico.dataInicio).format('DD/MM/YYYY')} - ${dayjs(servico.dataTermino).format('DD/MM/YYYY')} \n`
                                                                 )).join(', ') :
                                                                 ''}>
-                                                            {funcionario.username}
+                                                            {funcionario.nome}
                                                         </Tooltip>
                                                     </Select.Option>
                                                 );

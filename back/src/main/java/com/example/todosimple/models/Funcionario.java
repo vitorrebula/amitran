@@ -28,7 +28,7 @@ public class Funcionario {
     @NotNull(groups = { ICreateFuncionario.class })
     @NotEmpty(groups = { ICreateFuncionario.class })
     @Size(groups = ICreateFuncionario.class, min = 2, max = 100)
-    private String username;
+    private String nome;
 
     @Column(name = "CPF", length = 11, nullable = false, unique = true)
     @NotNull(groups = { ICreateFuncionario.class, IUpdateFuncionario.class })
@@ -66,9 +66,9 @@ public class Funcionario {
 
     public Funcionario() {}
 
-    public Funcionario(Long id, String username, String cpf, String cargo, String tipoCNH, String dataAdmissao, String status, String observacoes) {
+    public Funcionario(Long id, String nome, String cpf, String cargo, String tipoCNH, String dataAdmissao, String status, String observacoes) {
         this.id = id;
-        this.username = username;
+        this.nome = nome;
         this.cpf = cpf;
         this.cargo = cargo;
         this.tipoCNH = tipoCNH;
@@ -85,12 +85,12 @@ public class Funcionario {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNome() {
+        return nome;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getCpf() {
@@ -155,12 +155,12 @@ public class Funcionario {
         if (obj == null || getClass() != obj.getClass()) return false;
         Funcionario that = (Funcionario) obj;
         return Objects.equals(id, that.id) &&
-                Objects.equals(username, that.username) &&
+                Objects.equals(nome, that.nome) &&
                 Objects.equals(cpf, that.cpf);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, cpf);
+        return Objects.hash(id, nome, cpf);
     }
 }

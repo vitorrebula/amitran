@@ -74,7 +74,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
                     <Row gutter={16}>
                         <Col span={24}>
                             <Form.Item
-                                name="username"
+                                name="nome"
                                 label="Name"
                                 rules={[{ required: true, message: 'Insira o Nome' }]}
                             >
