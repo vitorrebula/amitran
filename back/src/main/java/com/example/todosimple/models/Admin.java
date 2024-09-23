@@ -1,9 +1,19 @@
 package com.example.todosimple.models;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.example.todosimple.enums.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,7 +23,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = Admin.TABLE_NAME)
-public class Admin {
+public class Admin implements UserDetails {
     public interface CreateAdmin {}
     public interface UpdateAdmin {}
 
@@ -33,13 +43,16 @@ public class Admin {
     @NotBlank(groups = CreateAdmin.class)
     @Size(groups = CreateAdmin.class, min = 8, max = 60)
     private String password;
+        
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     public Admin() {
     }
 
 
-    public Admin(Long id, String email, String password) {
-        this.id = id;
+    public Admin(String email, String password) {
+    
         this.email = email;
         this.password = password;
     }
@@ -88,6 +101,20 @@ public class Admin {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         return result;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+                if (this.userRole == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+
+    @Override
+    public String getUsername() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
     }
 
 
