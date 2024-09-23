@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.todosimple.dtos.AuthetinticationDto;
+import com.example.todosimple.dtos.RegisterDto;
 import com.example.todosimple.services.AuthorizationService;
 
 import jakarta.validation.Valid;
@@ -22,6 +23,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody @Valid AuthetinticationDto authetinticationDto){
         return authorizationService.login(authetinticationDto);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Object> register(@RequestBody RegisterDto registerDto){
+        return authorizationService.register(registerDto);
     }
 
 }

@@ -8,11 +8,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.todosimple.dtos.AuthetinticationDto;
 import com.example.todosimple.dtos.LoginResponseDto;
+import com.example.todosimple.dtos.RegisterDto;
 import com.example.todosimple.models.Admin;
 import com.example.todosimple.repositories.AdminRepository;
 import com.example.todosimple.security.TokenService;
@@ -44,6 +46,15 @@ public class AuthorizationService implements UserDetailsService{
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((Admin) auth.getPrincipal());
         return ResponseEntity.ok(new LoginResponseDto(token));
+    }
+
+        public ResponseEntity<Object> register (@RequestBody RegisterDto registerDto){
+        if (this.adminRepository.findByEmail(registerDto.email()) != null ) return ResponseEntity.badRequest().build();
+        String encryptedPassword = new BCryptPasswordEncoder().encode(registerDto.password());
+        
+        Admin newUser = new Admin(registerDto.email(), encryptedPassword);
+        this.adminRepository.save(newUser);
+        return ResponseEntity.ok().build();
     }
     
 }

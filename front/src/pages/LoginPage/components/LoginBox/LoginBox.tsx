@@ -1,47 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import * as styled from './LoginBox.styles';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
 import emailjs from '@emailjs/browser';
 import axios from 'axios';
+import { setToken } from '../../../../auth';
 import { url } from '../../../../url';
 
-interface Login {
-    email: string;
-    password: string;
+interface LoginResponse {
+    token: string;
 }
 
-function LoginBox() {
+export interface LoginBoxProps {
+    onLoginSuccess: () => void;
+}
+
+function LoginBox(props: LoginBoxProps) {
+    const {onLoginSuccess} = props;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [forgetPassword, setForgetPassword] = useState(false);
     const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '', '']);
     const [generatedCode, setGeneratedCode] = useState<string | null>(null);
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [adminData, setAdminData] = useState<Login | null>(null);
     const navigate = useNavigate();
 
-    const fetchLogin = async () => {
+    const handleLogin = async (passwordForgotten?: string) => {
         try {
-            const response = await axios.get<Login>(`${url}/admin/1`);
-            setAdminData(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchLogin();
-    }, []);
-
-    const handleLogin = async () => {
-        if (adminData && adminData.email === email && adminData.password === password) {
-            localStorage.setItem('isAuthenticated', 'true');
+            const loginData = {
+                email: (passwordForgotten ? {email: 'admin@admin.com.br'} : {email: email}),
+                password: (passwordForgotten ? { password: passwordForgotten } : {password: password})
+            };
+            const response = await axios.post<LoginResponse>(`${url}/auth/login`, loginData);
+            const token = response.data.token;
+            setToken(token);
+            onLoginSuccess();
             navigate('/home');
-        }
-        else {
-            alert('Dados Incorretos! Tente recuperar a senha via e-mail.')
-            console.log(email, password);
+        } catch (error: any) {
+            console.error('Erro no login:', error);
+            alert('Credenciais incorretas! Tente novamente.');
         }
     };
 
@@ -50,7 +47,7 @@ function LoginBox() {
         setGeneratedCode(code);
         emailjs.send('service_i9mujv8', 'template_q8dkru8', {
             codigo: code,
-            senha: adminData?.password
+            senha: 'admin123'
         }, 'w_O7CPvKQQSgAsx8r')
             .then((response) => {
                 console.log('SUCCESS!', response.status, response.text);
@@ -63,10 +60,11 @@ function LoginBox() {
     const handleVerification = () => {
         const enteredCode = verificationCode.join('');
         if (generatedCode === enteredCode) {
-            localStorage.setItem('isAuthenticated', 'true');
-            navigate('/home');
+            alert('Verificação bem-sucedida!');
+            handleLogin('admin123');
+            setForgetPassword(false);
         } else {
-            alert('Verification failed');
+            alert('Código de verificação incorreto.');
         }
     };
 
@@ -122,14 +120,14 @@ function LoginBox() {
                             }}>
                             Esqueceu a senha?
                         </styled.SignupLink>
-                        <styled.Button onClick={handleLogin}>LOGIN</styled.Button>
+                        <styled.Button onClick={() => handleLogin()}>LOGIN</styled.Button>
                     </>
                 ) : (
                     <>
                         <FaArrowLeft className="back-arrow" onClick={() => setForgetPassword(false)} />
                         <styled.Title>Verificação</styled.Title>
                         <styled.Instruction>
-                            Insira o código de 6 dígitos, enviado no e-mail rebula@maxtran.com.br
+                            Insira o código de 6 dígitos, enviado no e-mail {email}
                         </styled.Instruction>
                         <styled.VerificationContainer>
                             {verificationCode.map((digit, index) => (

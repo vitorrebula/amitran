@@ -39,7 +39,7 @@ public class Admin implements UserDetails {
     @Size(groups = CreateAdmin.class, min = 15, max = 100)
     private String email;
 
-    @Column(name = "password", length = 60, nullable = false, unique = true)
+    @Column(name = "password", length = 60, nullable = false)
     @NotBlank(groups = CreateAdmin.class)
     @Size(groups = CreateAdmin.class, min = 8, max = 60)
     private String password;
@@ -113,8 +113,7 @@ public class Admin implements UserDetails {
 
     @Override
     public String getUsername() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
+        return this.email;
     }
 
 
