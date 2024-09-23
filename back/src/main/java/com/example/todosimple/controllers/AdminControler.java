@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,9 @@ public class AdminControler {
     @Autowired
     private AdminService adminService; 
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/{id}")
     public ResponseEntity<Admin> findById(@PathVariable Long id){
         Admin obj = this.adminService.findById(id);
@@ -39,6 +43,7 @@ public class AdminControler {
     @Validated(CreateAdmin.class)
     public ResponseEntity<Void> create(@Valid @RequestBody Admin obj){
         this.adminService.create(obj);
+        obj.setPassword(passwordEncoder.encode(obj.getPassword()));
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }

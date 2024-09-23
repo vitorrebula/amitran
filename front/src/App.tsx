@@ -11,6 +11,7 @@ import Veiculos, { Veiculo } from './pages/Veiculos/Veiculos';
 import { Servico } from './pages/Servicos/ServicosPage';
 import axios from 'axios';
 import { url } from './url';
+import { setAuthHandler } from './axios';
 
 function App() {
 
@@ -18,6 +19,11 @@ function App() {
   const [listaVeiculo, setListaVeiculo] = useState<Veiculo[]>([]);
   const [listaServico, setListaServico] = useState<Servico[]>([]);
   const [lastRequestDate, setLastRequestDate] = useState<string>('');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    setAuthHandler(setIsAuthenticated);
+  }, []);
 
   const buscaVeiculos = async () => {
     try {
@@ -31,7 +37,7 @@ function App() {
 
   useEffect(() => {
     buscaVeiculos();
-  }, []);
+  }, [isAuthenticated]);
 
   const buscaFuncionarios = async () => {
     try {
@@ -45,7 +51,7 @@ function App() {
 
   useEffect(() => {
     buscaFuncionarios();
-  }, []);
+  }, [isAuthenticated]);
 
   const buscaServicosPorFaixaDeData = async (data: string) => {
     try {
@@ -61,18 +67,20 @@ function App() {
       console.error('Erro ao buscar os serviços:', error);
     }
   };
-  
-  
-  
+
   useEffect(() => {
     const dataHoje = new Date().toISOString();
     buscaServicosPorFaixaDeData(dataHoje);
-  }, []);
+  }, [isAuthenticated]);
+
+  const handleLoginSucces = () => {
+    setIsAuthenticated(true);
+  }
 
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSucces} />} />
         <Route path="/home" element={<PrivateRoute><HomePage listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
         <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaServico={listaServico} setListaServico={setListaServico} listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/veiculos" element={<PrivateRoute><Veiculos listaServico={listaServico} setListaServico={setListaServico} listaVeiculo={listaVeiculo} setListaVeiculo={setListaVeiculo} /></PrivateRoute>} />
