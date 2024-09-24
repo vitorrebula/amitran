@@ -4,11 +4,11 @@ import { EditOutlined } from '@ant-design/icons';
 import { Avatar, Card, message } from 'antd';
 import { FaTrashAlt } from 'react-icons/fa';
 import { Funcionario } from '../../Funcionarios';
-import axios from 'axios';
 import { Servico } from '../../../Servicos/ServicosPage';
 import dayjs from 'dayjs';
 import { ModalDelecao } from '../../../../components/ModalDelecao';
 import { url } from '../../../../url';
+import { api } from '../../../../axios';
 
 interface CardFuncionarioProps {
     funcionario: Funcionario;
@@ -36,7 +36,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
 
     const deleteFuncionario = async (id: number) => {
         try {
-            await axios.delete(`${url}/Funcionario/${id}`);
+            await api.delete(`${url}/Funcionario/${id}`);
 
             const updatedServicos = listaServico.map(servico => ({
                 ...servico,

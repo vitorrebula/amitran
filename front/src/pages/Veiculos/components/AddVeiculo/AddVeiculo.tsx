@@ -1,9 +1,9 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import * as styled from './AddVeiculo.styles';
 import { Button, Col, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
-import axios from 'axios';
 import { Veiculo } from '../../Veiculos';
 import { url } from '../../../../url';
+import { api } from '../../../../axios';
 
 interface AddVeiculoProps {
     setShowAddVeiculo: Dispatch<SetStateAction<boolean>>;
@@ -25,7 +25,7 @@ function AddVeiculo(props: AddVeiculoProps) {
                 placa: veiculo.placa.toUpperCase(),
             };
 
-            const response = await axios.post(`${url}/veiculo`, formattedVeiculo);
+            const response = await api.post(`${url}/veiculo`, formattedVeiculo);
             const novoVeiculo = response.data;
 
             setListaVeiculo(prev => [...prev, novoVeiculo]);

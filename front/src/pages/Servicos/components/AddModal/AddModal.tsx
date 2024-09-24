@@ -8,9 +8,9 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { Servico } from '../../ServicosPage';
 import { Funcionario } from '../../../Funcionarios/Funcionarios';
 import { Veiculo } from '../../../Veiculos/Veiculos';
-import axios from 'axios';
 import TextArea from 'antd/es/input/TextArea';
 import { url } from '../../../../url';
+import { api } from '../../../../axios';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
@@ -116,7 +116,7 @@ function AddModal(props: AddModalProps) {
         }
     
         try {
-            const response = await axios.post(`${url}/servico`, newServico);
+            const response = await api.post(`${url}/servico`, newServico);
             
             const servicoComId = { ...newServico, id: response.data.id };
             

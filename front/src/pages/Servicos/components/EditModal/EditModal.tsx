@@ -7,10 +7,10 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { Servico } from '../../ServicosPage';
 import { Funcionario } from '../../../Funcionarios/Funcionarios';
 import { Veiculo } from '../../../Veiculos/Veiculos';
-import axios from 'axios';
 import TextArea from 'antd/es/input/TextArea';
 import * as styled from './EditModal.styles';
 import { url } from '../../../../url';
+import { api } from '../../../../axios';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
@@ -149,7 +149,7 @@ function EditarModal(props: EditarModalProps) {
         }
     
         try {
-            const response = await axios.put(`${url}/servico`, updatedServico);
+            const response = await api.put(`${url}/servico`, updatedServico);
     
             const servicoAtualizado = { ...updatedServico, id: response.data.id };
     

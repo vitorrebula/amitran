@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import * as styled from './AddFuncionario.styles';
 import { Button, Col, DatePicker, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
-import axios from 'axios';
 import { Funcionario } from '../../Funcionarios';
 import dayjs from 'dayjs';
 import MaskedInput from 'antd-mask-input';
 import { url } from '../../../../url';
+import { api } from '../../../../axios';
 
 interface AddFuncionarioProps {
     setShowAddFunc: Dispatch<SetStateAction<boolean>>;
@@ -31,7 +31,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
                 dataAdmissao: formattedDate,
             };
 
-            const response = await axios.post(`${url}/Funcionario`, dataToSend);
+            const response = await api.post(`${url}/Funcionario`, dataToSend);
             const novoFuncionario = response.data;
 
             setListaFuncionario(prev => [...prev, novoFuncionario]);

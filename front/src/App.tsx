@@ -9,9 +9,8 @@ import { ServicosPage } from './pages/Servicos';
 import { Funcionario } from './pages/Funcionarios/Funcionarios';
 import Veiculos, { Veiculo } from './pages/Veiculos/Veiculos';
 import { Servico } from './pages/Servicos/ServicosPage';
-import axios from 'axios';
 import { url } from './url';
-import { setAuthHandler } from './axios';
+import { api, setAuthHandler } from './axios';
 
 function App() {
 
@@ -27,7 +26,7 @@ function App() {
 
   const buscaVeiculos = async () => {
     try {
-      const response = await axios.get(`${url}/veiculo`);
+      const response = await api.get(`${url}/veiculo`);
       setListaVeiculo(response.data);
     } catch (error) {
       console.error('Erro ao buscar a lista de veículos:', error);
@@ -41,7 +40,7 @@ function App() {
 
   const buscaFuncionarios = async () => {
     try {
-      const response = await axios.get(`${url}/Funcionario`);
+      const response = await api.get(`${url}/Funcionario`);
       setListaFuncionario(response.data);
     } catch (error) {
       console.error('Erro ao buscar a lista de funcionários:', error);
@@ -55,7 +54,7 @@ function App() {
 
   const buscaServicosPorFaixaDeData = async (data: string) => {
     try {
-      const response = await axios.get<Servico[]>(`${url}/servico/data/${data}`);
+      const response = await api.get<Servico[]>(`${url}/servico/data/${data}`);
       setListaServico(prevLista => {
         const novosServicos = response.data.filter(novoServico => 
           !prevLista.some(servicoExistente => servicoExistente.id === novoServico.id)

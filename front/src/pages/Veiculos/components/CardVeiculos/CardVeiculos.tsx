@@ -8,11 +8,11 @@ import { BsTruckFlatbed } from "react-icons/bs";
 import { FaTruckFront } from "react-icons/fa6";
 import { PiTruckLight, PiVanFill } from "react-icons/pi";
 import { Veiculo } from '../../Veiculos';
-import axios from 'axios';
 import { Servico } from '../../../Servicos/ServicosPage';
 import dayjs from 'dayjs';
 import { ModalDelecao } from '../../../../components/ModalDelecao';
 import { url } from '../../../../url';
+import { api } from '../../../../axios';
 
 interface CardVeiculoProps {
     veiculo: Veiculo;
@@ -33,13 +33,13 @@ function CardVeiculo(props: CardVeiculoProps) {
             servico.veiculos?.some(v => v.placa === veiculo.placa)
         );
 
-        setFutureServicos(futureServices);  // Armazena serviços futuros, se houver
-        setModalVisible(true);  // Exibe o modal independentemente de serviços futuros
+        setFutureServicos(futureServices);
+        setModalVisible(true); 
     };
 
     const deleteVeiculo = async (placa: string) => {
         try {
-            await axios.delete(`${url}/veiculo/${placa}`);
+            await api.delete(`${url}/veiculo/${placa}`);
 
             const updatedServicos = listaServico.map(servico => ({
                 ...servico,

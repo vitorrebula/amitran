@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import axios from 'axios';
 import { Servico } from '../../../ServicosPage';
 import { Collapse, CollapseProps, Modal, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
@@ -9,6 +8,7 @@ import { Funcionario } from '../../../../Funcionarios/Funcionarios';
 import dayjs from 'dayjs';
 import { EditModal } from '../../EditModal';
 import { url } from '../../../../../url';
+import { api } from '../../../../../axios';
 
 interface CardServicosProps {
     servicos: Servico[];
@@ -39,7 +39,7 @@ function CardServicos(props: CardServicosProps) {
     const handleOk = async () => {
         if (servicoToDelete) {
             try {
-                await axios.delete(`${url}/servico/${servicoToDelete.id}`);
+                await api.delete(`${url}/servico/${servicoToDelete.id}`);
                 setListaServico(prevServicos => prevServicos.filter(servico => servico.id !== servicoToDelete.id));
                 message.success('Serviço excluído com sucesso.');
             } catch (error) {
