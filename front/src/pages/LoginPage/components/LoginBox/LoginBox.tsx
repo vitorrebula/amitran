@@ -25,11 +25,11 @@ function LoginBox(props: LoginBoxProps) {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = async (passwordForgotten?: string) => {
+    const handleLogin = async (passwordForgotten?: boolean) => {
         try {
             const loginData = {
-                email: (passwordForgotten ? {email: 'admin@admin.com.br'} : {email: email}),
-                password: (passwordForgotten ? { password: passwordForgotten } : {password: password})
+                email: (passwordForgotten ? 'admin@admin.com.br' : email),
+                password: (passwordForgotten ? 'admin' : password)
             };
             const response = await axios.post<LoginResponse>(`${url}/auth/login`, loginData);
             const token = response.data.token;
@@ -61,7 +61,7 @@ function LoginBox(props: LoginBoxProps) {
         const enteredCode = verificationCode.join('');
         if (generatedCode === enteredCode) {
             alert('Verificação bem-sucedida!');
-            handleLogin('admin123');
+            handleLogin(true);
             setForgetPassword(false);
         } else {
             alert('Código de verificação incorreto.');
