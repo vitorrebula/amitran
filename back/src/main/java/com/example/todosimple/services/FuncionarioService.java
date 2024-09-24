@@ -1,16 +1,18 @@
 package com.example.todosimple.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todosimple.models.Funcionario;
-import com.example.todosimple.models.Servico;
 import com.example.todosimple.repositories.FuncionarioRepository;
 import com.example.todosimple.repositories.ServicoRepository;
+import com.example.todosimple.dtos.FuncionarioDto;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FuncionarioService {
@@ -21,54 +23,61 @@ public class FuncionarioService {
     @Autowired
     private ServicoRepository servicoRepository;
 
-    public Funcionario findById(Long id) {
-        Optional<Funcionario> funcionario = this.funcionarioRepository.findById(id);
-        return funcionario.orElseThrow(() -> new RuntimeException(
-                "Funcionario não encontrado! Id: " + id + ", Type: " + Funcionario.class.getName()));
+
+    public List<FuncionarioDto> listarFuncionarios() {
+        return funcionarioRepository.findAll().stream().map(FuncionarioDto::new).toList();
+
     }
 
-    public List<Funcionario> findAll() {
-        return funcionarioRepository.findAll();
-    }
 
-    @Transactional
-    public Funcionario create(Funcionario obj) {
-        obj.setId(null);
-        obj = this.funcionarioRepository.save(obj);
-        return obj;
+    public FuncionarioDto buscarFuncionarioPorId(Long id) {
+        return funcionarioRepository.findById(id)
+                .map(FuncionarioDto::new)
+                .orElseThrow(() -> new EntityNotFoundException("Funcionário com o ID " + id + " não encontrado."));
     }
 
     @Transactional
-    public Funcionario update(Funcionario obj) {
-        Funcionario newObj = findById(obj.getId());
-        newObj.setCpf(obj.getCpf());
-        newObj.setDataAdmissao(obj.getDataAdmissao());
-        newObj.setTipoCNH(obj.getTipoCNH());
-        newObj.setCargo(obj.getCargo());
-        newObj.setNome(obj.getNome());
-        newObj.setStatus(obj.getStatus());
-        newObj.setObservacoes(obj.getObservacoes());
-        newObj.setServicos(obj.getServicos());
-        return this.funcionarioRepository.save(newObj);
+    public ResponseEntity<String>  cadastrarFuncionario(FuncionarioDto funcionarioDto) {
+        Funcionario funcionario = new Funcionario();
+        funcionario.setNome(funcionarioDto.nome());
+        funcionario.setCpf(funcionarioDto.cpf());
+        funcionario.setCargo(funcionarioDto.cargo());
+        funcionario.setTipoCNH(funcionarioDto.tipoCNH());
+        funcionario.setDataAdmissao(funcionarioDto.dataAdmissao());
+        funcionario.setObservacoes(funcionarioDto.observacoes());
+        funcionario.setStatus(funcionarioDto.status());
+
+        funcionarioRepository.save(funcionario);
+
+        return new ResponseEntity<>("Funcionário cadastrado com sucesso!", HttpStatus.CREATED);
     }
 
     @Transactional
-    public void delete(Long id) {
-        Funcionario funcionario = findById(id);
+    public ResponseEntity<String> atualizarFuncionario(Long id, FuncionarioDto funcionarioDto) {
 
-        List<Servico> servicos = servicoRepository.findAll();
-        for (Servico servico : servicos) {
-            if (servico.getFuncionarios().contains(funcionario)) {
-                servico.getFuncionarios().remove(funcionario);
-                servicoRepository.save(servico);
-            }
-        }
+        Funcionario funcionarioExistente = funcionarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
 
-        try {
-            this.funcionarioRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Funcionario não pode ser deletado, pois tem entidades dependentes relacionadas!");
-        }
+        funcionarioExistente.setNome(funcionarioDto.nome());
+        funcionarioExistente.setCpf(funcionarioDto.cpf());
+        funcionarioExistente.setCargo(funcionarioDto.cargo());
+        funcionarioExistente.setTipoCNH(funcionarioDto.tipoCNH());
+        funcionarioExistente.setDataAdmissao(funcionarioDto.dataAdmissao());
+        funcionarioExistente.setObservacoes(funcionarioDto.observacoes());
+        funcionarioExistente.setStatus(funcionarioDto.status());
+
+        funcionarioRepository.save(funcionarioExistente);
+
+        return new ResponseEntity<>("Funcionário atualizado com sucesso!", HttpStatus.OK);
+
+    }
+
+    public ResponseEntity<String> excluirFuncionario(Long id) {
+
+        Funcionario funcionario = funcionarioRepository.findById(id).orElseThrow(() ->new RuntimeException("Funcionário não encontrado"));
+
+        funcionarioRepository.delete(funcionario);
+
+        return new ResponseEntity<>("Funcionário excluido com sucesso!", HttpStatus.OK);
     }
 }
