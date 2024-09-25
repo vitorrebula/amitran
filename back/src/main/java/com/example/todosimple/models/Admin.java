@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import java.util.Date;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,10 +20,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = Admin.TABLE_NAME)
 public class Admin implements UserDetails {
     public interface CreateAdmin {}
@@ -47,14 +55,25 @@ public class Admin implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at", nullable = true)
+    private Date updatedAt;
+
+
     public Admin() {
     }
 
 
-    public Admin(String email, String password) {
+    public Admin(String email, String password, UserRole userRole) {
     
         this.email = email;
         this.password = password;
+        this.userRole= userRole;
     }
 
 
@@ -113,7 +132,7 @@ public class Admin implements UserDetails {
 
     @Override
     public String getUsername() {
-        // TODO Auto-generated method stub
+
         throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
     }
 
