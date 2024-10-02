@@ -75,7 +75,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                 ...values,
             };
     
-            const response = await api.put(`${url}/${veiculo?.placa}`, dataToSend);            
+            const response = await api.put(`${url}/veiculo/${veiculo?.placa}`, dataToSend);            
             const veiculoAtualizado = response.data; 
             setListaVeiculo(prev => 
                 prev.map(veiculo => 
