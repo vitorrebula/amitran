@@ -6,7 +6,6 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { Veiculo } from '../../../../Veiculos/Veiculos';
 import { Funcionario } from '../../../../Funcionarios/Funcionarios';
 import dayjs from 'dayjs';
-import { EditModal } from '../../EditModal';
 import { url } from '../../../../../url';
 import { api } from '../../../../../axios';
 
@@ -21,53 +20,18 @@ interface CardServicosProps {
 
 function CardServicos(props: CardServicosProps) {
     const { servicos, setListaServico, listaServico, listaVeiculo, listaFuncionario } = props;
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [servicoToDelete, setServicoToDelete] = useState<Servico | null>(null);
-    const [servicoToEdit, setServicoToEdit] = useState<Servico | undefined>(undefined); 
-
-    const showModal = (servico: Servico) => {
-        setServicoToDelete(servico);
-        setIsModalVisible(true);
-    };
-
-    const showEditModal = (servico: Servico) => {
-        setServicoToEdit(servico);
-        setIsEditModalVisible(true); 
-    };
-
-    const handleOk = async () => {
-        if (servicoToDelete) {
-            try {
-                await api.delete(`${url}/servico/${servicoToDelete.id}`);
-                setListaServico(prevServicos => prevServicos.filter(servico => servico.id !== servicoToDelete.id));
-                message.success('Serviço excluído com sucesso.');
-            } catch (error) {
-                message.error('Erro ao excluir o serviço.');
-                console.error("Erro ao excluir o serviço:", error);
-            }
-        }
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-        setServicoToDelete(null);
-    };
-
+    
     const genExtra = (servico: Servico) => (
         <>
             <EditOutlined
                 onClick={(event) => {
                     event.stopPropagation();
-                    showEditModal(servico);
                 }}
                 style={{ paddingRight: '15px' }}
             />
             <FaRegTrashAlt
                 onClick={(event) => {
                     event.stopPropagation();
-                    showModal(servico);
                 }}
             />
         </>
@@ -134,25 +98,6 @@ function CardServicos(props: CardServicosProps) {
                 items={items}
                 bordered={false}
             />
-            <EditModal
-                listaServico={listaServico}
-                showEditarModal={isEditModalVisible}
-                setShowEditarModal={setIsEditModalVisible}
-                servico={servicoToEdit}
-                setListaServico={setListaServico}
-                listaFuncionario={listaFuncionario}
-                listaVeiculo={listaVeiculo}
-            />
-            <Modal
-                title="Confirmar Exclusão"
-                open={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                okText="Excluir"
-                cancelText="Cancelar"
-            >
-                <p>Tem certeza que deseja excluir o serviço {servicoToDelete?.nomeCliente}?</p>
-            </Modal>
         </>
     );
 }
