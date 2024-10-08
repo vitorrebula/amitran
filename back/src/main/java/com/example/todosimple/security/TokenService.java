@@ -17,8 +17,8 @@ import com.example.todosimple.models.Admin;
 @Service
 public class TokenService {
 
-    private String secret = "segredinho";
-
+    private String secret = System.getenv("SECRET_KEY");
+    
     public String generateToken(Admin user){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
