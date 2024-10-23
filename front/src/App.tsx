@@ -80,7 +80,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSucces} />} />
-        <Route path="/home" element={<PrivateRoute><HomePage listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
+        <Route path="/home" element={<PrivateRoute><HomePage listaFuncionario={listaFuncionario} setListaServico={setListaServico} setListaFuncionario={setListaFuncionario} setListaVeiculo={setListaVeiculo} listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
         <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaServico={listaServico} setListaServico={setListaServico} listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/veiculos" element={<PrivateRoute><Veiculos listaServico={listaServico} setListaServico={setListaServico} listaVeiculo={listaVeiculo} setListaVeiculo={setListaVeiculo} /></PrivateRoute>} />
         <Route path="/servicos" element={<PrivateRoute><ServicosPage buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} setListaServico={setListaServico} listaServico={listaServico} /></PrivateRoute>} />
