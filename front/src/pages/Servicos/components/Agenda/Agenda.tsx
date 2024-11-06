@@ -62,7 +62,7 @@ function Agenda(props: ServicosPageProps) {
                 </Button>
                 <Calendar fullscreen={false} onSelect={onSelect} fullCellRender={fullCellRender} />
             </styled.CenteredCalendar>
-            <styled.Legenda>Clique na data desejada, e visualize, edite ou exclua serviços!</styled.Legenda>
+            
             <ListaServicos listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} selectedValue={selectedValue} listaServico={listaServico} setListaServico={setListaServico} openListaServicos={openListaServicos} setOpenListaServicos={setOpenListaServicos} />
             <AddModal showAddModal={showAddModal} setShowAddModal={setShowAddModal} listaServico={listaServico} setListaServico={setListaServico} veiculos={listaVeiculo} funcionarios={listaFuncionario} />
         </styled.AgendaContainer>

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
-import PrivateRoute from './pages/PrivateRoute';
-import { LoginPage } from './pages/LoginPage';
-import { HomePage } from './pages/HomePage';
 import { Funcionarios } from './pages/Funcionarios';
 import { ServicosPage } from './pages/Servicos';
 import { Funcionario } from './pages/Funcionarios/Funcionarios';
@@ -11,6 +8,9 @@ import Veiculos, { Veiculo } from './pages/Veiculos/Veiculos';
 import { Servico } from './pages/Servicos/ServicosPage';
 import { url } from './url';
 import { api, setAuthHandler } from './axios';
+import { HomePage } from './pages/HomePage';
+import PrivateRoute from './pages/PrivateRoute';
+import { LoginPage } from './pages/LoginPage';
 
 function App() {
 

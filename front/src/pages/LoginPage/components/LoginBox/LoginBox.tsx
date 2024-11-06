@@ -35,7 +35,7 @@ function LoginBox(props: LoginBoxProps) {
             const token = response.data.token;
             setToken(token);
             onLoginSuccess();
-            navigate('/home');
+            navigate('/funcionarios'); //change to Home when Home is available
         } catch (error: any) {
             console.error('Erro no login:', error);
             alert('Credenciais incorretas! Tente novamente.');

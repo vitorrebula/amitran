@@ -6,6 +6,7 @@ import { Veiculo } from '../Veiculos/Veiculos';
 import { Servico } from '../Servicos/ServicosPage';
 import { Collapse } from 'antd'; 
 import { Funcionario } from '../Funcionarios/Funcionarios';
+import { Flow } from './components/Flow';
 
 const { Panel } = Collapse; 
 
@@ -24,11 +25,7 @@ function HomePage(props: HomePageProps) {
     return (
         <styled.HomePageContainer>
             <Navbar />
-            <Collapse accordion defaultActiveKey={['1']} style={{backgroundColor: 'white', margin: '20px'}}>
-                <Panel header="Rotas de Veículos" key="1">
-                    <VeiculosIndicator listaFuncionario={listaFuncionario} setListaServico={setListaServico} setListaFuncionario={setListaFuncionario} setListaVeiculo={setListaVeiculo} listaVeiculo={listaVeiculo} listaServico={listaServico} />
-                </Panel>
-            </Collapse>
+            <Flow listaFuncionario={listaFuncionario} setListaServico={setListaServico} setListaFuncionario={setListaFuncionario} setListaVeiculo={setListaVeiculo} listaVeiculo={listaVeiculo} listaServico={listaServico} />
         </styled.HomePageContainer>
     );
 }

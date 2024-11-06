@@ -4,6 +4,7 @@ import { Navbar } from '../../components/Navbar';
 import { Agenda } from './components/Agenda';
 import { Veiculo } from '../Veiculos/Veiculos';
 import { Funcionario } from '../Funcionarios/Funcionarios';
+import { Grafico } from './components/Graficos';
 
 export interface Servico {
     id?: number;
@@ -29,13 +30,23 @@ export interface ServicosPageProps {
 }
 
 function ServicosPage(props: ServicosPageProps) {
-       const {listaVeiculo, listaFuncionario, listaServico, setListaServico, lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData}= props;
-        return(
-            <styled.ServicosPageContainer>
-                <Navbar />
-                <Agenda buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaVeiculo={listaVeiculo} listaFuncionario={listaFuncionario} listaServico={listaServico} setListaServico={setListaServico}/>
-            </styled.ServicosPageContainer>
-        );
+    const { listaVeiculo, listaFuncionario, listaServico, setListaServico, lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData } = props;
+
+    return (
+        <styled.ServicosPageContainer>
+            <Navbar />
+            <Agenda 
+                buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} 
+                lastRequestDate={lastRequestDate} 
+                setLastRequestDate={setLastRequestDate} 
+                listaVeiculo={listaVeiculo} 
+                listaFuncionario={listaFuncionario} 
+                listaServico={listaServico} 
+                setListaServico={setListaServico}
+            />
+            <Grafico />
+        </styled.ServicosPageContainer>
+    );
 }
 
 export default ServicosPage;
