@@ -4,7 +4,6 @@ import { Navbar } from '../../components/Navbar';
 import { Agenda } from './components/Agenda';
 import { Veiculo } from '../Veiculos/Veiculos';
 import { Funcionario } from '../Funcionarios/Funcionarios';
-import { Grafico } from './components/Graficos';
 
 export interface Servico {
     id?: number;
@@ -44,7 +43,6 @@ function ServicosPage(props: ServicosPageProps) {
                 listaServico={listaServico} 
                 setListaServico={setListaServico}
             />
-            <Grafico />
         </styled.ServicosPageContainer>
     );
 }
