@@ -1,1 +1,1 @@
-export const url = 'http://192.168.0.230:8080';
+export const url = 'https://back-dry-haze-3945.fly.dev';

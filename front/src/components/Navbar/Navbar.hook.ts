@@ -1,9 +1,9 @@
 import { MenuProps } from "antd";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function useNavbar(){
-    
+    const location = useLocation();
     const [current, setCurrent] = useState('mail');
     const navigate = useNavigate();
     
@@ -11,6 +11,18 @@ function useNavbar(){
         setCurrent(e.key);
         navigate(`/${e.key}`);
     };
+
+    useEffect(() => {
+        if(location.pathname.includes('funcionarios')){
+            setCurrent('funcionarios');
+        }else if(location.pathname.includes('veiculos')){
+            setCurrent('veiculos');
+        }else if(location.pathname.includes('servicos')){
+            setCurrent('servicos');
+        }else{
+            setCurrent('home');
+        }
+    }, [location]);
 
     return{
         onClick,

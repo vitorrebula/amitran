@@ -1,12 +1,12 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as styled from './EditVeiculo.styles';
 import { Button, Col, Drawer, Form, Input, message, Row, Select, Space } from 'antd';
-import axios from 'axios';
 import { Veiculo } from '../../Veiculos';
 import dayjs from 'dayjs';
 import { Servico } from '../../../Servicos/ServicosPage';
 import { ModalDelecao } from '../../../../components/ModalDelecao';
 import { url } from '../../../../url';
+import { api } from '../../../../axios';
 
 interface EditVeiculoProps {
     setShowEditVeiculo: Dispatch<SetStateAction<boolean>>;
@@ -59,7 +59,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                 veiculos: servico.veiculos?.filter(v => v.id !== veiculo?.id)
             };
 
-            await axios.put(`${url}/servico`, updatedService);
+            await api.put(`${url}/servico`, updatedService);
             setListaServico(prev =>
                 prev.map(s => s.id === servico.id ? updatedService : s)
             );
@@ -75,7 +75,7 @@ function EditVeiculo(props: EditVeiculoProps) {
                 ...values,
             };
     
-            const response = await axios.put(`${url}/${veiculo?.placa}`, dataToSend);            
+            const response = await api.put(`${url}/veiculo/${veiculo?.placa}`, dataToSend);            
             const veiculoAtualizado = response.data; 
             setListaVeiculo(prev => 
                 prev.map(veiculo => 

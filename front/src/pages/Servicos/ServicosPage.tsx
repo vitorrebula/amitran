@@ -29,13 +29,22 @@ export interface ServicosPageProps {
 }
 
 function ServicosPage(props: ServicosPageProps) {
-       const {listaVeiculo, listaFuncionario, listaServico, setListaServico, lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData}= props;
-        return(
-            <styled.ServicosPageContainer>
-                <Navbar />
-                <Agenda buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaVeiculo={listaVeiculo} listaFuncionario={listaFuncionario} listaServico={listaServico} setListaServico={setListaServico}/>
-            </styled.ServicosPageContainer>
-        );
+    const { listaVeiculo, listaFuncionario, listaServico, setListaServico, lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData } = props;
+
+    return (
+        <styled.ServicosPageContainer>
+            <Navbar />
+            <Agenda 
+                buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} 
+                lastRequestDate={lastRequestDate} 
+                setLastRequestDate={setLastRequestDate} 
+                listaVeiculo={listaVeiculo} 
+                listaFuncionario={listaFuncionario} 
+                listaServico={listaServico} 
+                setListaServico={setListaServico}
+            />
+        </styled.ServicosPageContainer>
+    );
 }
 
 export default ServicosPage;
