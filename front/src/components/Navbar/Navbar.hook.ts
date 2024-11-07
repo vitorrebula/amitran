@@ -19,6 +19,8 @@ function useNavbar(){
             setCurrent('veiculos');
         }else if(location.pathname.includes('servicos')){
             setCurrent('servicos');
+        }else if(location.pathname.includes('mapa')){
+            setCurrent('mapa');
         }else{
             setCurrent('home');
         }

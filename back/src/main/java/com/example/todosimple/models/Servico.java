@@ -48,6 +48,10 @@ public class Servico {
     @NotNull(message = "O valor não pode ser nulo")
     private Float valor;
 
+    @Column(name = "regiao", nullable = false)
+    @NotNull(message = "Escolha uma região, será importante!")
+    private String regiao;
+
     @Column(name = "descricao", length = 255, nullable = true)
     @Size(groups = CreateServico.class, max = 300)
     private String descricao;
@@ -137,6 +141,14 @@ public class Servico {
 
     public void setValor(Float valor) {
         this.valor = valor;
+    }
+
+    public String getRegiao() {
+        return regiao;
+    }
+
+    public void setRegiao(String regiao) {
+        this.regiao = regiao;
     }
 
     public String getDescricao() {

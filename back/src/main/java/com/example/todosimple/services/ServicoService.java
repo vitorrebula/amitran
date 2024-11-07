@@ -66,6 +66,7 @@ public class ServicoService {
         newObj.setDataInicio(obj.getDataInicio());
         newObj.setDataTermino(obj.getDataTermino());
         newObj.setValor(obj.getValor());
+        newObj.setRegiao(obj.getRegiao());
         newObj.setDescricao(obj.getDescricao());
         newObj.setFuncionarios(obj.getFuncionarios());
         newObj.setVeiculos(obj.getVeiculos());
