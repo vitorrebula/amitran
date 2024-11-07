@@ -10,6 +10,9 @@ export const FlowContainer = styled.div`
         text-align: center;
         text-justify: center;
     }
+    .react-flow__panel.react-flow__attribution.bottom.right {
+        display: none;
+    }
 `;
 
 export const HelpBar = styled.div`
