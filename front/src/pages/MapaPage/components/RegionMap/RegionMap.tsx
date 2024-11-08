@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DatePicker, Modal, List, Select, Typography, Row, Col } from 'antd';
 import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
 import L from 'leaflet';
@@ -55,6 +55,8 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                     dayjs(servicoA.dataInicio).isBefore(dayjs(servicoB.dataInicio)) ? -1 : 1
                 );
             setFilteredServices(filtered);
+        }else{
+            setFilteredServices([]);
         }
     }, [dateRange, listaServico]);
 
@@ -96,7 +98,7 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
         }
     }, [filteredServices, selectedVeiculo]);
 
-    const handleDateRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+    const handleDateRangeChange = useCallback((dates: [Dayjs | null, Dayjs | null] | null) => {
         if (dates) {
             setDateRange(dates);
 
@@ -120,7 +122,7 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
         } else {
             setDateRange([null, null]);
         }
-    };
+    }, [dateRange, setDateRange]);
 
     const handleVehicleSelect = (value: string) => setSelectedVeiculo(value);
 
