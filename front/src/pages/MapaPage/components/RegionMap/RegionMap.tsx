@@ -22,7 +22,7 @@ export interface RegionMarker {
 }
 
 function DateTimeRangePickerMap(props: MapaPageProps) {
-    const { setListaServico, lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData, listaServico, listaVeiculo } = props;
+    const { lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData, listaServico, listaVeiculo } = props;
     const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([null, null]);
     const [filteredServices, setFilteredServices] = useState<Servico[]>([]);
     const [selectedVeiculo, setSelectedVeiculo] = useState<string | null>(null);
@@ -51,7 +51,7 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                         dataTermino.isBetween(dateRange[0], dateRange[1], 'day', '[]')
                     );
                 })
-                .sort((servicoA, servicoB) => 
+                .sort((servicoA, servicoB) =>
                     dayjs(servicoA.dataInicio).isBefore(dayjs(servicoB.dataInicio)) ? -1 : 1
                 );
             setFilteredServices(filtered);
@@ -64,16 +64,16 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
 
             const fetchCoordinates = async () => {
                 const coordinates: { coords: [number, number][], name: string, origem: [number, number], destino: [number, number], serviceData: Servico }[] = [];
-                
+
                 for (let service of veiculoServicos) {
                     const origemCoords = await getCoordinatesFromAddress(service.enderecoOrigem);
                     const destinoCoords = await getCoordinatesFromAddress(service.enderecoEntrega);
-                    
+
                     if (origemCoords && destinoCoords) {
                         coordinates.push({ coords: [origemCoords, destinoCoords], name: service.nomeCliente, origem: origemCoords, destino: destinoCoords, serviceData: service });
                     }
                 }
-                
+
                 setRouteCoordinates(coordinates);
             };
 
@@ -91,7 +91,7 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                     services: filteredServices.filter(service => service.regiao === marker.region)
                 };
             });
-            
+
             setRegionMarkers(updatedRegionMarkers);
         }
     }, [filteredServices, selectedVeiculo]);
@@ -99,19 +99,19 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
     const handleDateRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
         if (dates) {
             setDateRange(dates);
-    
+
             const [startDate, endDate] = dates;
-    
+
             if (startDate && endDate) {
                 const isBeyondLimit =
                     startDate.isBefore(dayJsLastRequestDate.subtract(1, 'month')) ||
                     endDate.isAfter(dayJsLastRequestDate.add(4, 'months'));
-    
+
                 if (isBeyondLimit) {
-                    if(startDate.isBefore(dayJsLastRequestDate.subtract(1, 'month'))) {
+                    if (startDate.isBefore(dayJsLastRequestDate.subtract(1, 'month'))) {
                         buscaServicosPorFaixaDeData(startDate.toISOString())
                         setLastRequestDate(startDate.toISOString());
-                    }else{
+                    } else {
                         buscaServicosPorFaixaDeData(endDate.toISOString())
                         setLastRequestDate(endDate.toISOString());
                     }
@@ -129,10 +129,17 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
     const renderVeiculos = (veiculos: Veiculo[] | undefined) => veiculos?.map(veiculo => <span key={veiculo.placa}>{veiculo.placa} </span>);
     const renderFuncionarios = (funcionarios: Funcionario[] | undefined) => funcionarios?.map(func => <span key={func.id}>{func.nome}<br /></span>);
 
+    const createNumberedMarker = (number: number) => L.divIcon({
+        html: `<div style="background-color: #ffffff; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 1px solid black; font-size: 12px;">${number}</div>`,
+        className: '',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
     return (
         <styled.RegionMapContainer>
-            <Title level={3} style={{marginTop: '-15px'}}>Visualize rotas e se programe!</Title>
-            <p style={{fontSize: '13px'}}>Caso não escolha um veículo, poderá ver os serviços por Região, para as datas selecionadas.</p>
+            <Title level={3} style={{ marginTop: '-15px' }}>Visualize rotas e se programe!</Title>
+            <p style={{ fontSize: '13px' }}>Caso não escolha um veículo, poderá ver os serviços por Região, para as datas selecionadas.</p>
             <Row gutter={16} style={{ marginBottom: 16 }}>
                 <Col span={12}>
                     <label>Selecione o intervalo de datas:</label>
@@ -142,6 +149,7 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                     <label>Selecione um Veículo(opcional):</label>
                     <Select
                         placeholder="Selecione um Veículo"
+                        disabled={dateRange[0] && dateRange[1] ? false : true}
                         onChange={handleVehicleSelect}
                         style={{ width: '100%' }}
                         allowClear
@@ -155,67 +163,57 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                     </Select>
                 </Col>
             </Row>
+            <div className={dateRange[0] && dateRange[1] ? undefined : 'disabled'}>
+                <MapContainer center={[-15.7801, -47.9292]} zoom={4} style={{ height: '500px', width: '100%' }}>
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; OpenStreetMap contributors"
+                    />
 
-            <MapContainer center={[-15.7801, -47.9292]} zoom={4} style={{ height: '500px', width: '100%' }}>
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&copy; OpenStreetMap contributors"
-                />
-
-                {selectedVeiculo ? (
-                    <>
-                        {routeCoordinates.map((route, index) => (
-                            <React.Fragment key={index}>
-                                <Polyline
-                                    positions={route.coords}
-                                    color={colors[index % colors.length]}
-                                    eventHandlers={{
-                                        click: () => handleRouteClick(route.serviceData),
-                                    }}
-                                />
+                    {selectedVeiculo ? (
+                        <>
+                            {routeCoordinates.map((route, index) => (
+                                <React.Fragment key={index}>
+                                    <Polyline
+                                        positions={route.coords}
+                                        color={colors[index % colors.length]}
+                                        eventHandlers={{
+                                            click: () => handleRouteClick(route.serviceData),
+                                        }}
+                                    />
+                                    <Marker
+                                        position={route.origem}
+                                        icon={createNumberedMarker(index * 2 + 1)}
+                                        eventHandlers={{
+                                            click: () => handleRouteClick(route.serviceData),
+                                        }}
+                                    />
+                                    <Marker
+                                        position={route.destino}
+                                        icon={createNumberedMarker(index * 2 + 2)}
+                                        eventHandlers={{
+                                            click: () => handleRouteClick(route.serviceData),
+                                        }}
+                                    />
+                                </React.Fragment>
+                            ))}
+                        </>
+                    ) : (
+                        <>
+                            {regionMarkers.map((marker, index) => (
                                 <Marker
-                                    position={route.origem}
-                                    icon={L.icon({
-                                        iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-orange.png',
-                                        iconSize: [25, 41],
-                                        iconAnchor: [12, 41],
-                                    })}
+                                    key={index}
+                                    position={marker.coordinates}
+                                    icon={createNumberedMarker(marker.services.length)}
                                     eventHandlers={{
-                                        click: () => handleRouteClick(route.serviceData),
+                                        click: () => setSelectedRegion(marker)
                                     }}
                                 />
-                                <Marker
-                                    position={route.destino}
-                                    icon={L.icon({
-                                        iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-orange.png',                                        
-                                        iconSize: [25, 41],
-                                        iconAnchor: [12, 41],
-                                    })}
-                                    eventHandlers={{
-                                        click: () => handleRouteClick(route.serviceData),
-                                    }}
-                                />
-                            </React.Fragment>
-                        ))}
-                    </>
-                ) : (
-                    regionMarkers.map(marker => (
-                        <Marker
-                            key={marker.region}
-                            position={marker.coordinates}
-                            eventHandlers={{
-                                click: () => setSelectedRegion(marker),
-                            }}
-                            icon={L.icon({
-                                iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-orange.png',
-                                iconSize: [25, 41],
-                                iconAnchor: [12, 41],
-                            })}
-                        />
-                    ))
-                )}
-            </MapContainer>
-
+                            ))}
+                        </>
+                    )}
+                </MapContainer>
+            </div>
 
             <Modal
                 title={selectedService ? `Detalhes do Serviço` : "Detalhes"}
@@ -230,9 +228,9 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                         {`Inicia em ${selectedService.enderecoOrigem}, no dia: ${dayjs(selectedService.dataInicio).format('DD/MM/YYYY')}`}
                         <br />
                         {`Vai até ${selectedService.enderecoEntrega} na data ${dayjs(selectedService.dataInicio).format('DD/MM/YYYY')}`}
-                        <br/>
+                        <br />
                         Veículo(s): {renderVeiculos(selectedService.veiculos)}
-                        <br/>
+                        <br />
                         Funcionario(s): {renderFuncionarios(selectedService.funcionarios)}
                     </List.Item>
                 )}
@@ -244,26 +242,22 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                 onCancel={() => setSelectedRegion(null)}
                 footer={null}
             >
-                {selectedRegion && selectedRegion.services.length > 0 ? (
-                    <List
-                        dataSource={selectedRegion.services}
-                        renderItem={service => (
-                            <List.Item>
-                                <strong>{`${service.nomeCliente}`}</strong>
-                                <br />
-                                {`Inicia em ${service.enderecoOrigem}, no dia: ${dayjs(service.dataInicio).format('DD/MM/YYYY')}`}
-                                <br />
-                                {`Vai até ${service.enderecoEntrega} na data ${dayjs(service.dataInicio).format('DD/MM/YYYY')}`}
-                                <br/>
-                                Veículo(s): {renderVeiculos(service.veiculos)}
-                                <br/>
-                                Funcionario(s): {renderFuncionarios(service.funcionarios)}
-                            </List.Item>
-                        )}
-                    />
-                ) : (
-                    <p>Nenhum serviço nesta região</p>
-                )}
+                <List
+                    dataSource={selectedRegion?.services}
+                    renderItem={service => (
+                        <List.Item>
+                            <strong>{`${service.nomeCliente}`}</strong>
+                            <br />
+                            {`Inicia em ${service.enderecoOrigem}, no dia: ${dayjs(service.dataInicio).format('DD/MM/YYYY')}`}
+                            <br />
+                            {`Vai até ${service.enderecoEntrega} na data ${dayjs(service.dataInicio).format('DD/MM/YYYY')}`}
+                            <br />
+                            Veículo(s): {renderVeiculos(service.veiculos)}
+                            <br />
+                            Funcionario(s): {renderFuncionarios(service.funcionarios)}
+                        </List.Item>
+                    )}
+                />
             </Modal>
         </styled.RegionMapContainer>
     );
