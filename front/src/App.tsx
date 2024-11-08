@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
-import PrivateRoute from './pages/PrivateRoute';
-import { LoginPage } from './pages/LoginPage';
-import { HomePage } from './pages/HomePage';
 import { Funcionarios } from './pages/Funcionarios';
 import { ServicosPage } from './pages/Servicos';
 import { Funcionario } from './pages/Funcionarios/Funcionarios';
@@ -11,6 +8,10 @@ import Veiculos, { Veiculo } from './pages/Veiculos/Veiculos';
 import { Servico } from './pages/Servicos/ServicosPage';
 import { url } from './url';
 import { api, setAuthHandler } from './axios';
+import { HomePage } from './pages/HomePage';
+import PrivateRoute from './pages/PrivateRoute';
+import { LoginPage } from './pages/LoginPage';
+import { MapaPage } from './pages/MapaPage';
 
 function App() {
 
@@ -80,10 +81,11 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSucces} />} />
-        <Route path="/home" element={<PrivateRoute><HomePage listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
+        <Route path="/home" element={<PrivateRoute><HomePage listaFuncionario={listaFuncionario} setListaServico={setListaServico} setListaFuncionario={setListaFuncionario} setListaVeiculo={setListaVeiculo} listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
         <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaServico={listaServico} setListaServico={setListaServico} listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/veiculos" element={<PrivateRoute><Veiculos listaServico={listaServico} setListaServico={setListaServico} listaVeiculo={listaVeiculo} setListaVeiculo={setListaVeiculo} /></PrivateRoute>} />
         <Route path="/servicos" element={<PrivateRoute><ServicosPage buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} setListaServico={setListaServico} listaServico={listaServico} /></PrivateRoute>} />
+        <Route path="/mapa" element={<PrivateRoute><MapaPage lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} setListaServico={setListaServico} listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>

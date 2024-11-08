@@ -13,6 +13,7 @@ export interface Servico {
     dataInicio: string;
     dataTermino: string;
     valor: number;
+    regiao: String;
     descricao?: string;
     funcionarios: Funcionario[];
     veiculos?: Veiculo[];
@@ -25,17 +26,26 @@ export interface ServicosPageProps {
     setListaServico: Dispatch<SetStateAction<Servico[]>>;
     lastRequestDate: string;
     setLastRequestDate: Dispatch<SetStateAction<string>>;
-    buscaServicosPorFaixaDeData: (date: string) => Promise<void>
+    buscaServicosPorFaixaDeData: (date: string) => Promise<void>;
 }
 
 function ServicosPage(props: ServicosPageProps) {
-       const {listaVeiculo, listaFuncionario, listaServico, setListaServico, lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData}= props;
-        return(
-            <styled.ServicosPageContainer>
-                <Navbar />
-                <Agenda buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaVeiculo={listaVeiculo} listaFuncionario={listaFuncionario} listaServico={listaServico} setListaServico={setListaServico}/>
-            </styled.ServicosPageContainer>
-        );
+    const { listaVeiculo, listaFuncionario, listaServico, setListaServico, lastRequestDate, setLastRequestDate, buscaServicosPorFaixaDeData } = props;
+
+    return (
+        <styled.ServicosPageContainer>
+            <Navbar />
+            <Agenda 
+                buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} 
+                lastRequestDate={lastRequestDate} 
+                setLastRequestDate={setLastRequestDate} 
+                listaVeiculo={listaVeiculo} 
+                listaFuncionario={listaFuncionario} 
+                listaServico={listaServico} 
+                setListaServico={setListaServico}
+            />
+        </styled.ServicosPageContainer>
+    );
 }
 
 export default ServicosPage;

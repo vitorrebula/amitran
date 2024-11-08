@@ -18,7 +18,7 @@ import com.example.todosimple.models.Admin;
 public class TokenService {
 
     private String secret = "segredinho";
-
+    
     public String generateToken(Admin user){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
