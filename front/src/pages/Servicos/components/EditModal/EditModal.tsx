@@ -11,6 +11,7 @@ import TextArea from 'antd/es/input/TextArea';
 import * as styled from './EditModal.styles';
 import { url } from '../../../../url';
 import { api } from '../../../../axios';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
@@ -45,6 +46,7 @@ function EditarModal(props: EditarModalProps) {
                 dataInicio: dayjs(servico.dataInicio),
                 dataTermino: dayjs(servico.dataTermino),
                 valor: servico.valor,
+                regiao: servico.regiao,
                 descricao: servico.descricao,
                 motoristas: servico.funcionarios?.filter(f => f.cargo === 'Motorista' || f.cargo === 'Chapa Motorista').map(f => f.id),
                 ajudantes: servico.funcionarios?.filter(f => f.cargo === 'Ajudante' || f.cargo === 'Chapa Ajudante').map(f => f.id),
@@ -135,10 +137,11 @@ function EditarModal(props: EditarModalProps) {
         const updatedServico: Servico = {
             ...servico,
             nomeCliente: values.nomeCliente,
-            enderecoOrigem: values.enderecoOrigem,
-            enderecoEntrega: values.enderecoEntrega,
+            enderecoOrigem: values.enderecoOrigem.label,
+            enderecoEntrega: values.enderecoEntrega.label,
             dataInicio: dataInicio,
             dataTermino: dataTermino,
+            regiao: values.regiao,
             valor: values.valor || 0,
             descricao: values.descricao || '',
             funcionarios: funcionariosSelecionados,
@@ -203,14 +206,26 @@ function EditarModal(props: EditarModalProps) {
                                 name="enderecoOrigem"
                                 rules={[{ required: true, message: 'Por favor, insira o endereço de origem' }]}
                             >
-                                <Input />
+                                <GooglePlacesAutocomplete
+                                    apiKey="AIzaSyBKthUEQewpbJT6jHHl3zzkJlyZzbOdudI"
+                                    selectProps={{
+                                        onChange: (value) => form.setFieldsValue({ enderecoOrigem: value }),
+                                        placeholder: 'Digite o endereço de origem',
+                                    }}
+                                />
                             </Form.Item>
                             <Form.Item
                                 label="Endereço de Entrega"
                                 name="enderecoEntrega"
                                 rules={[{ required: true, message: 'Por favor, insira o endereço de entrega' }]}
                             >
-                                <Input />
+                                <GooglePlacesAutocomplete
+                                    apiKey="AIzaSyBKthUEQewpbJT6jHHl3zzkJlyZzbOdudI"
+                                    selectProps={{
+                                        onChange: (value) => form.setFieldsValue({ enderecoEntrega: value }),
+                                        placeholder: 'Digite o endereço de entrega',
+                                    }}
+                                />
                             </Form.Item>
                             <Row gutter={16}>
                                 <Col span={12}>
@@ -312,6 +327,18 @@ function EditarModal(props: EditarModalProps) {
                                             </Select.Option>
                                         );
                                     })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Região"
+                                name="regiao"
+                            >
+                                <Select placeholder="Selecione a região">
+                                    <Select.Option value="Norte">Norte</Select.Option>
+                                    <Select.Option value="Nordeste">Nordeste</Select.Option>
+                                    <Select.Option value="Sul">Sul</Select.Option>
+                                    <Select.Option value="Sudeste">Sudeste</Select.Option>
+                                    <Select.Option value="Centro-Oeste">Centro-Oeste</Select.Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item

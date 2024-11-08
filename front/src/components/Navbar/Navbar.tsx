@@ -2,6 +2,7 @@ import { IoHome } from "react-icons/io5";
 import { RiTeamFill } from "react-icons/ri";
 import { FaTruckMoving } from "react-icons/fa";
 import { FaPeopleCarry } from "react-icons/fa";
+import { FaMap } from "react-icons/fa6";
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import * as styled from './Navbar.styles';
@@ -29,6 +30,11 @@ const items: MenuItem[] = [
     label: 'Serviços',
     key: 'servicos',
     icon: <FaPeopleCarry />,
+  },
+  {
+    label: 'Mapa de Acompanhamento',
+    key: 'mapa',
+    icon: <FaMap />,
   },
 ];
 

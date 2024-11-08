@@ -11,6 +11,7 @@ import { Veiculo } from '../../../Veiculos/Veiculos';
 import TextArea from 'antd/es/input/TextArea';
 import { url } from '../../../../url';
 import { api } from '../../../../axios';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
@@ -102,10 +103,11 @@ function AddModal(props: AddModalProps) {
     
         const newServico: Servico = {
             nomeCliente: values.nomeCliente,
-            enderecoOrigem: values.enderecoOrigem,
-            enderecoEntrega: values.enderecoEntrega,
+            enderecoOrigem: values.enderecoOrigem.label, 
+            enderecoEntrega: values.enderecoEntrega.label,
             dataInicio: values.dataInicio.toISOString(),
             dataTermino: values.dataTermino?.toISOString(),
+            regiao: values.regiao,
             valor: values.valor || 0,
             descricao: values.descricao || '',
             funcionarios: funcionariosSelecionados,
@@ -174,14 +176,26 @@ function AddModal(props: AddModalProps) {
                                 name="enderecoOrigem"
                                 rules={[{ required: true, message: 'Por favor, insira o endereço de origem' }]}
                             >
-                                <Input />
+                                <GooglePlacesAutocomplete
+                                    apiKey="AIzaSyBKthUEQewpbJT6jHHl3zzkJlyZzbOdudI"
+                                    selectProps={{
+                                        onChange: (value) => form.setFieldsValue({ enderecoOrigem: value }),
+                                        placeholder: 'Digite o endereço de origem',
+                                    }}
+                                />
                             </Form.Item>
                             <Form.Item
                                 label="Endereço de Entrega"
                                 name="enderecoEntrega"
                                 rules={[{ required: true, message: 'Por favor, insira o endereço de entrega' }]}
                             >
-                                <Input />
+                                <GooglePlacesAutocomplete
+                                    apiKey="AIzaSyBKthUEQewpbJT6jHHl3zzkJlyZzbOdudI"
+                                    selectProps={{
+                                        onChange: (value) => form.setFieldsValue({ enderecoEntrega: value }),
+                                        placeholder: 'Digite o endereço de entrega',
+                                    }}
+                                />
                             </Form.Item>
                             <Row gutter={16}>
                                 <Col span={12}>
@@ -283,6 +297,18 @@ function AddModal(props: AddModalProps) {
                                             </Select.Option>
                                         );
                                     })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Região"
+                                name="regiao"
+                            >
+                                <Select placeholder="Selecione a região">
+                                    <Select.Option value="Norte">Norte</Select.Option>
+                                    <Select.Option value="Nordeste">Nordeste</Select.Option>
+                                    <Select.Option value="Sul">Sul</Select.Option>
+                                    <Select.Option value="Sudeste">Sudeste</Select.Option>
+                                    <Select.Option value="Centro-Oeste">Centro-Oeste</Select.Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item

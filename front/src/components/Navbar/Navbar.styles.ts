@@ -5,9 +5,12 @@ export const NavbarContainer = styled.div`
     padding-top: 2vh;
     opacity: 1;
     position: relative;
-    @media (max-width: 468px) {
-        span {
+    @media (max-width: 768px) {
+        .ant-menu-title-content {
             display: none;
+        }
+        svg {
+            font-size: 10px;
         }
     }
 `;

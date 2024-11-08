@@ -11,6 +11,7 @@ import { api, setAuthHandler } from './axios';
 import { HomePage } from './pages/HomePage';
 import PrivateRoute from './pages/PrivateRoute';
 import { LoginPage } from './pages/LoginPage';
+import { MapaPage } from './pages/MapaPage';
 
 function App() {
 
@@ -84,6 +85,7 @@ function App() {
         <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaServico={listaServico} setListaServico={setListaServico} listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/veiculos" element={<PrivateRoute><Veiculos listaServico={listaServico} setListaServico={setListaServico} listaVeiculo={listaVeiculo} setListaVeiculo={setListaVeiculo} /></PrivateRoute>} />
         <Route path="/servicos" element={<PrivateRoute><ServicosPage buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} setListaServico={setListaServico} listaServico={listaServico} /></PrivateRoute>} />
+        <Route path="/mapa" element={<PrivateRoute><MapaPage lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} setListaServico={setListaServico} listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
