@@ -4,10 +4,12 @@ import { Button, Drawer, Space } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { Servico } from '../../ServicosPage';
-import { saveAs } from 'file-saver';
+import { RiWhatsappFill } from "react-icons/ri";
+import { FaDownload } from "react-icons/fa6";
 import { CardServicos } from './CardServicos';
 import { Funcionario } from '../../../Funcionarios/Funcionarios';
 import { Veiculo } from '../../../Veiculos/Veiculos';
+import saveAs from 'file-saver';
 
 dayjs.extend(isBetween);
 
@@ -34,7 +36,7 @@ function ListaServicos(props: ListaServicosProps) {
         });
     }, [listaServico, selectedValue]);
 
-    const downloadEscala = () => {
+    const generateEscalaContent = (whatsapp?: boolean) => {
         let escalaContent = `Escala do dia: ${dataSelecionada}\n----------------------------------------------------\n`;
 
         filteredServicos.forEach(servico => {
@@ -53,9 +55,20 @@ function ListaServicos(props: ListaServicosProps) {
             escalaContent += '----------------------------------------------------\n';
         });
 
+        return whatsapp ? encodeURIComponent(escalaContent) : escalaContent;
+    };
+
+    const sendViaWhatsApp = () => {
+        const escalaContent = generateEscalaContent(true);
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${escalaContent}`;
+        window.open(whatsappUrl, '_blank');
+    };
+
+    const downloadEscala = () => {
+        const escalaContent = generateEscalaContent();
         const blob = new Blob([escalaContent], { type: "text/plain;charset=utf-8" });
         saveAs(blob, `escala_${dataSelecionada}.txt`);
-    };
+    }
 
     return (
         <styled.ListaServicosContainer>
@@ -65,9 +78,8 @@ function ListaServicos(props: ListaServicosProps) {
                 open={openListaServicos}
                 extra={
                     <Space>
-                        <Button type="primary" onClick={downloadEscala}>
-                            Baixar Escala
-                        </Button>
+                        <Button icon={<RiWhatsappFill fontSize={'1.3rem'}/>} onClick={sendViaWhatsApp} />
+                        <Button icon={<FaDownload fontSize={'1.3rem'}/>} onClick={downloadEscala} />
                     </Space>
                 }
             >
