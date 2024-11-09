@@ -45,17 +45,19 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
             const filtered = listaServico
                 .filter(service => {
                     const dataInicio = dayjs(service.dataInicio);
-                    const dataTermino = dayjs(service.dataTermino);
+                    const dataTermino = dayjs(service.dataTermino).endOf('day');
+    
                     return (
-                        dataInicio.isBetween(dateRange[0], dateRange[1], 'day', '[]') ||
-                        dataTermino.isBetween(dateRange[0], dateRange[1], 'day', '[]')
+                        dataInicio.isBetween(dateRange[0], dateRange[1], 'day', '[]') || 
+                        dataTermino.isBetween(dateRange[0], dateRange[1], 'day', '[]') ||
+                        (dataInicio.isBefore(dateRange[0]) && dataTermino.isAfter(dateRange[1]))
                     );
                 })
                 .sort((servicoA, servicoB) =>
                     dayjs(servicoA.dataInicio).isBefore(dayjs(servicoB.dataInicio)) ? -1 : 1
                 );
             setFilteredServices(filtered);
-        }else{
+        } else {
             setFilteredServices([]);
         }
     }, [dateRange, listaServico]);
