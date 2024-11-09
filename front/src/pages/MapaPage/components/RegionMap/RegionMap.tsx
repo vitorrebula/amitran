@@ -229,7 +229,7 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                         <br />
                         {`Inicia em ${selectedService.enderecoOrigem}, no dia: ${dayjs(selectedService.dataInicio).format('DD/MM/YYYY')}`}
                         <br />
-                        {`Vai até ${selectedService.enderecoEntrega} na data ${dayjs(selectedService.dataInicio).format('DD/MM/YYYY')}`}
+                        {`Vai até ${selectedService.enderecoEntrega} na data ${dayjs(selectedService.dataTermino).format('DD/MM/YYYY')}`}
                         <br />
                         Veículo(s): {renderVeiculos(selectedService.veiculos)}
                         <br />
@@ -252,7 +252,7 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                             <br />
                             {`Inicia em ${service.enderecoOrigem}, no dia: ${dayjs(service.dataInicio).format('DD/MM/YYYY')}`}
                             <br />
-                            {`Vai até ${service.enderecoEntrega} na data ${dayjs(service.dataInicio).format('DD/MM/YYYY')}`}
+                            {`Vai até ${service.enderecoEntrega} na data ${dayjs(service.dataTermino).format('DD/MM/YYYY')}`}
                             <br />
                             Veículo(s): {renderVeiculos(service.veiculos)}
                             <br />
