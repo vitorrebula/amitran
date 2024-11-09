@@ -1,6 +1,6 @@
 {
   "name": "amitran",
-  "version": "1.0.0",
+  "version": "1.2.19",
   "private": true,
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
