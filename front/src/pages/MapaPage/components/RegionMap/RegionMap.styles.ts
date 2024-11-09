@@ -21,4 +21,13 @@ export const RegionMapContainer = styled.div`
     .leaflet-control-attribution.leaflet-control {
         display: none;
     }
+
+    @media(max-width: 768px) {
+        .ant-row {
+            flex-direction: column;
+        }
+        .ant-col-12 {
+            max-width: 100%;
+        }
+    }
 `;
