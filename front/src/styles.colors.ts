@@ -7,7 +7,8 @@ const colors = {
     cinzaescuro: "#333 ",
     roxologin: "#8e2de2",
     azullogin: "#4a00e0",
-    azulescuroamitran: "#414797"
+    azulescuroamitran: "#414797",
+    vermelho: "#FF0000"
 };
 
 export default colors;

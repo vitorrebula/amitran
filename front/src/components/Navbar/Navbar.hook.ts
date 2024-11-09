@@ -22,7 +22,7 @@ function useNavbar(){
         }else if(location.pathname.includes('mapa')){
             setCurrent('mapa');
         }else{
-            setCurrent('home');
+            setCurrent('route');
         }
     }, [location]);
 

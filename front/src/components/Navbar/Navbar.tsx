@@ -1,4 +1,4 @@
-import { IoHome } from "react-icons/io5";
+import { IoGitMergeOutline } from "react-icons/io5";
 import { RiTeamFill } from "react-icons/ri";
 import { FaTruckMoving } from "react-icons/fa";
 import { FaPeopleCarry } from "react-icons/fa";
@@ -12,9 +12,9 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
   {
-    label: 'Home',
-    key: 'home',
-    icon: <IoHome />,
+    label: 'Fluxo',
+    key: 'route',
+    icon: <IoGitMergeOutline />,
   },
   {
     label: 'Funcionarios',

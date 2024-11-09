@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import * as styled from './HomePage.styles';
+import * as styled from './RoutePage.styles';
 import { Navbar } from '../../components/Navbar';
 import { VeiculosIndicator } from './components/VeiculosIndicator';
 import { Veiculo } from '../Veiculos/Veiculos';
@@ -8,9 +8,8 @@ import { Collapse } from 'antd';
 import { Funcionario } from '../Funcionarios/Funcionarios';
 import { Flow } from './components/Flow';
 
-const { Panel } = Collapse; 
 
-interface HomePageProps {
+interface RoutePageProps {
     listaServico: Servico[];
     setListaServico: Dispatch<SetStateAction<Servico[]>>;
     listaVeiculo: Veiculo[];
@@ -19,15 +18,15 @@ interface HomePageProps {
     setListaFuncionario: Dispatch<SetStateAction<Funcionario[]>>;
 }
 
-function HomePage(props: HomePageProps) {
+function RoutePage(props: RoutePageProps) {
     const { listaServico, listaVeiculo, setListaServico, setListaFuncionario, setListaVeiculo, listaFuncionario } = props;
 
     return (
-        <styled.HomePageContainer>
+        <styled.RoutePageContainer>
             <Navbar />
             <Flow listaFuncionario={listaFuncionario} setListaServico={setListaServico} setListaFuncionario={setListaFuncionario} setListaVeiculo={setListaVeiculo} listaVeiculo={listaVeiculo} listaServico={listaServico} />
-        </styled.HomePageContainer>
+        </styled.RoutePageContainer>
     );
 }
 
-export default HomePage;
+export default RoutePage;

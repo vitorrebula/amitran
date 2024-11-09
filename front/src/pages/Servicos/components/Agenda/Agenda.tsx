@@ -55,12 +55,14 @@ function Agenda(props: ServicosPageProps) {
 
     return (
         <styled.AgendaContainer>
-            <styled.ServiçosTitle>Agende os Serviços!</styled.ServiçosTitle>
+            <styled.ServiçosTitle>Agende os Serviços</styled.ServiçosTitle>
+            <styled.Legenda>Selecione um dia, veja os serviços, delete ou edite os dados!</styled.Legenda>
             <styled.CenteredCalendar>
                 <Button type="primary" block onClick={() => setShowAddModal(true)}>
                     Adicionar Serviço
                 </Button>
                 <Calendar fullscreen={false} onSelect={onSelect} fullCellRender={fullCellRender} />
+                <p>Nos dias em vermelho, todos os veículos estão ocupados.</p>
             </styled.CenteredCalendar>
             
             <ListaServicos listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} selectedValue={selectedValue} listaServico={listaServico} setListaServico={setListaServico} openListaServicos={openListaServicos} setOpenListaServicos={setOpenListaServicos} />

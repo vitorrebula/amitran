@@ -8,7 +8,7 @@ import Veiculos, { Veiculo } from './pages/Veiculos/Veiculos';
 import { Servico } from './pages/Servicos/ServicosPage';
 import { url } from './url';
 import { api, setAuthHandler } from './axios';
-import { HomePage } from './pages/HomePage';
+import { RoutePage } from './pages/HomePage';
 import PrivateRoute from './pages/PrivateRoute';
 import { LoginPage } from './pages/LoginPage';
 import { MapaPage } from './pages/MapaPage';
@@ -81,7 +81,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSucces} />} />
-        <Route path="/home" element={<PrivateRoute><HomePage listaFuncionario={listaFuncionario} setListaServico={setListaServico} setListaFuncionario={setListaFuncionario} setListaVeiculo={setListaVeiculo} listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
+        <Route path="/route" element={<PrivateRoute><RoutePage listaFuncionario={listaFuncionario} setListaServico={setListaServico} setListaFuncionario={setListaFuncionario} setListaVeiculo={setListaVeiculo} listaServico={listaServico} listaVeiculo={listaVeiculo} /></PrivateRoute>} />
         <Route path="/funcionarios" element={<PrivateRoute><Funcionarios listaServico={listaServico} setListaServico={setListaServico} listaFuncionario={listaFuncionario} setListaFuncionario={setListaFuncionario} /></PrivateRoute>} />
         <Route path="/veiculos" element={<PrivateRoute><Veiculos listaServico={listaServico} setListaServico={setListaServico} listaVeiculo={listaVeiculo} setListaVeiculo={setListaVeiculo} /></PrivateRoute>} />
         <Route path="/servicos" element={<PrivateRoute><ServicosPage buscaServicosPorFaixaDeData={buscaServicosPorFaixaDeData} lastRequestDate={lastRequestDate} setLastRequestDate={setLastRequestDate} listaFuncionario={listaFuncionario} listaVeiculo={listaVeiculo} setListaServico={setListaServico} listaServico={listaServico} /></PrivateRoute>} />
