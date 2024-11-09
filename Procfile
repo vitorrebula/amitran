@@ -1,0 +1,1 @@
+web: cd back && ./mvnw spring-boot:run
