@@ -1,1 +1,1 @@
-export const url = 'https://amitran-0f187ea8d87c.herokuapp.com/';
+export const url = 'https://amitran-0f187ea8d87c.herokuapp.com';
