@@ -205,12 +205,14 @@ function EditarModal(props: EditarModalProps) {
                                 label="Endereço de Origem"
                                 name="enderecoOrigem"
                                 rules={[{ required: true, message: 'Por favor, insira o endereço de origem' }]}
+                                initialValue={servico?.enderecoOrigem}
                             >
                                 <GooglePlacesAutocomplete
                                     apiKey="AIzaSyBKthUEQewpbJT6jHHl3zzkJlyZzbOdudI"
                                     selectProps={{
                                         onChange: (value) => form.setFieldsValue({ enderecoOrigem: value }),
                                         placeholder: 'Digite o endereço de origem',
+                                        defaultInputValue: servico?.enderecoOrigem
                                     }}
                                 />
                             </Form.Item>
@@ -224,6 +226,7 @@ function EditarModal(props: EditarModalProps) {
                                     selectProps={{
                                         onChange: (value) => form.setFieldsValue({ enderecoEntrega: value }),
                                         placeholder: 'Digite o endereço de entrega',
+                                        defaultInputValue: servico?.enderecoEntrega
                                     }}
                                 />
                             </Form.Item>
