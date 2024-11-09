@@ -1,1 +1,1 @@
-web: cd back && ./mvnw spring-boot:run
+web: cd $PROJECT_PATH && ./mvnw spring-boot:run
