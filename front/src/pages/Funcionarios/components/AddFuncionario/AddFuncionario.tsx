@@ -31,7 +31,7 @@ function AddFuncionario(props: AddFuncionarioProps) {
                 dataAdmissao: formattedDate,
             };
 
-            const response = await api.post(`${url}/Funcionario`, dataToSend);
+            const response = await api.post(`${url}/funcionario`, dataToSend);
             const novoFuncionario = response.data;
 
             setListaFuncionario(prev => [...prev, novoFuncionario]);

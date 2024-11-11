@@ -41,7 +41,7 @@ function App() {
 
   const buscaFuncionarios = async () => {
     try {
-      const response = await api.get(`${url}/Funcionario`);
+      const response = await api.get(`${url}/funcionario`);
       setListaFuncionario(response.data);
     } catch (error) {
       console.error('Erro ao buscar a lista de funcionários:', error);

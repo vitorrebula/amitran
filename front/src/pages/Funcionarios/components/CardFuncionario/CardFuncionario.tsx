@@ -36,7 +36,7 @@ function CardFuncionario(props: CardFuncionarioProps) {
 
     const deleteFuncionario = async (id: number) => {
         try {
-            await api.delete(`${url}/Funcionario/${id}`);
+            await api.delete(`${url}/funcionario/${id}`);
 
             const updatedServicos = listaServico.map(servico => ({
                 ...servico,

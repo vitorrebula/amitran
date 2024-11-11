@@ -82,7 +82,7 @@ function EditFuncionario(props: EditFuncionarioProps) {
                 dataAdmissao: formattedDate,
             };
 
-            const response = await api.put(`${url}/Funcionario`, dataToSend);
+            const response = await api.put(`${url}/funcionario`, dataToSend);
             const funcionarioAtualizado = response.data;
             setListaFuncionario(prev =>
                 prev.map(funcionario =>
