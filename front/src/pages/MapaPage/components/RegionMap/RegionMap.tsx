@@ -159,7 +159,7 @@ function DateTimeRangePickerMap(props: MapaPageProps) {
                         allowClear
                         onClear={() => setSelectedVeiculo(null)}
                     >
-                        {listaVeiculo.map(veiculo => (
+                        {listaVeiculo.filter(veiculo => veiculo.status === 'Ativo').map(veiculo => (
                             <Option key={veiculo.placa} value={veiculo.placa}>
                                 {veiculo.placa}
                             </Option>
