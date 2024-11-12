@@ -3,8 +3,10 @@ import styled from 'styled-components';
 export const FlowContainer = styled.div`
     padding: 20px;
     .flow-content {
-        width: 80vw;
-        height: 50vh;
+        width: 90vw;
+        height: 60vh;
+        justify-content: center;
+        display: flex;
     }
     h3{
         text-align: center;

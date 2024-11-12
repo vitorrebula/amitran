@@ -7,6 +7,8 @@ import { Veiculo } from '../../../Veiculos/Veiculos';
 import { Funcionario } from '../../../Funcionarios/Funcionarios';
 import { Select, Divider } from 'antd';
 import * as styled from './Flow.styles';
+import CustomNode from './utils/CustomNode';
+import { EditModal } from '../../../Servicos/components/EditModal';
 
 interface FlowProps {
     listaServico: Servico[];
@@ -17,10 +19,21 @@ interface FlowProps {
     setListaFuncionario: Dispatch<SetStateAction<Funcionario[]>>;
 }
 
+const nodeTypes = {
+    customNode: CustomNode,
+};
+
 function Flow({ listaServico, listaVeiculo, listaFuncionario, setListaServico }: FlowProps) {
     const [veiculoSelecionado, setVeiculoSelecionado] = useState<string | null>(null);
     const [servicosFiltrados, setServicosFiltrados] = useState<Servico[]>([]);
-    
+    const [isEditarModalVisible, setIsEditarModalVisible] = useState(false);
+    const [servicoSelecionado, setServicoSelecionado] = useState<Servico | undefined>(undefined);
+
+    const abrirEditarModal = (servico: Servico) => {
+        setServicoSelecionado(servico);
+        setIsEditarModalVisible(true);
+    };
+
     const ordenarServicos = (servicos: Servico[]) => {
         return servicos.sort((a, b) => dayjs(a.dataInicio).isAfter(dayjs(b.dataInicio)) ? 1 : -1);
     };
@@ -39,11 +52,12 @@ function Flow({ listaServico, listaVeiculo, listaFuncionario, setListaServico }:
     const createNodesAndEdges = useCallback(() => {
         const nodes: Node[] = servicosFiltrados.map((servico, index) => ({
             id: String(servico.id),
-            position: { x: 300 * index, y: 100 },
-            data: { label: `${servico.nomeCliente} \n\n ${dayjs(servico.dataInicio).format('DD/MM/YYYY')} > ${dayjs(servico.dataTermino).format('DD/MM/YYYY')}` },
-            style: { width: 200 },
-            sourcePosition: Position.Right,
-            targetPosition: Position.Left,
+            type: 'customNode',
+            position: { x: 400 * index, y: 100 },
+            data: {
+                servico,
+                onEdit: () => abrirEditarModal(servico),
+            },
         }));
 
         const edges: Edge[] = servicosFiltrados.slice(1).map((_, index) => ({
@@ -79,6 +93,7 @@ function Flow({ listaServico, listaVeiculo, listaFuncionario, setListaServico }:
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}
+                    nodeTypes={nodeTypes}
                     style={{ width: '100%', height: 500 }}
                     fitView
                 >
@@ -86,6 +101,17 @@ function Flow({ listaServico, listaVeiculo, listaFuncionario, setListaServico }:
                     <Controls />
                 </ReactFlow>
             </div>
+            {isEditarModalVisible && (
+                <EditModal
+                    showEditarModal={isEditarModalVisible}
+                    setShowEditarModal={setIsEditarModalVisible}
+                    listaServico={listaServico}
+                    setListaServico={setListaServico}
+                    listaFuncionario={listaFuncionario}
+                    listaVeiculo={listaVeiculo}
+                    servico={servicoSelecionado}
+                />
+            )}
         </styled.FlowContainer>
     );
 }
