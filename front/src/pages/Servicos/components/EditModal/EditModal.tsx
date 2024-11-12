@@ -137,8 +137,8 @@ function EditarModal(props: EditarModalProps) {
         const updatedServico: Servico = {
             ...servico,
             nomeCliente: values.nomeCliente,
-            enderecoOrigem: values.enderecoOrigem.label,
-            enderecoEntrega: values.enderecoEntrega.label,
+            enderecoOrigem: values.enderecoOrigem.label ?? servico?.enderecoOrigem,
+            enderecoEntrega: values.enderecoEntrega.label ?? servico?.enderecoEntrega,
             dataInicio: dataInicio,
             dataTermino: dataTermino,
             regiao: values.regiao,
