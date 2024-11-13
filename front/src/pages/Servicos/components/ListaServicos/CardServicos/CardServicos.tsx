@@ -133,6 +133,7 @@ function CardServicos(props: CardServicosProps) {
                 expandIconPosition="start"
                 items={items}
                 bordered={false}
+                ghost
             />
             <EditModal
                 listaServico={listaServico}
